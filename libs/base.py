@@ -26,7 +26,7 @@ class BaseLoader:
         x_train = [hog(img, orientations=orientations, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block,
                        block_norm='L1-sqrt', feature_vector=True) for img in x_train]
 
-        logger.info("Descriptor length: %s" % len(x_train[0]))
+        logger.debug("Descriptor length: %s" % len(x_train[0]))
 
         logger.debug("Preparing test data...")
         x_test = [cv2.cvtColor(cv2.resize(self.crop_sq(img), self.size), cv2.COLOR_BGR2GRAY) for img in self.x_test]
@@ -36,7 +36,7 @@ class BaseLoader:
         return (x_train, self.y_train), (x_test, self.y_test)
 
     def get_surf(self, k=500, multi=100, n_init=1, max_iter=10):
-        logger.info("Generating surf hist...")
+        logger.debug("Generating surf hist...")
         # Preparing training data
         des_train = self.get_surf_des(self.x_train)
         des_train_list = self.group_to_list(des_train)
@@ -60,8 +60,7 @@ class BaseLoader:
         return (x_train, self.y_train), (x_test, self.y_test)
 
     def get_sift(self, k=500, multi=100, n_init=1, max_iter=10):
-        logger.info("Generating sift hist...")
-
+        logger.debug("Generating sift hist...")
         # Preparing training data
         des_train = self.get_sift_des(self.x_train)
         des_train_list = self.group_to_list(des_train)

@@ -3,6 +3,7 @@ import sys
 from libs.gtsrb import GTSRB
 from libs.stl10 import STL10
 from libs.classifiers import KNN, SVM, LDA, RandomForest
+from libs.grid import GridSearchSIFT, GridSearchSURF
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -16,11 +17,15 @@ logger.addHandler(sh)
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 3:
+    if len(sys.argv == 4):
+        _, dataset, method, scan = sys.argv
+    elif len(sys.argv) == 3:
         _, dataset, method = sys.argv
+        scan = False
     elif len(sys.argv) == 2:
         _, dataset = sys.argv
         method = None
+        scan = False
     else:
         logger.error("Insufficient args, exiting...")
         sys.exit()
@@ -32,26 +37,37 @@ if __name__ == '__main__':
     else:
         sys.exit()
 
-    if method == 'sift':
-        (x_train, y_train), (x_test, y_test) = img_set.get_sift()
-    elif method == 'surf':
-        (x_train, y_train), (x_test, y_test) = img_set.get_surf()
-    elif method == 'hog':
-        (x_train, y_train), (x_test, y_test) = img_set.get_hog()
+    if not scan:
+        if method == 'sift':
+            (x_train, y_train), (x_test, y_test) = img_set.get_sift()
+        elif method == 'surf':
+            (x_train, y_train), (x_test, y_test) = img_set.get_surf()
+        elif method == 'hog':
+            (x_train, y_train), (x_test, y_test) = img_set.get_hog()
+        else:
+            sys.exit()
+
+        knn = KNN(x_train, y_train, x_test, y_test)
+        knn.start()
+
+        svm = SVM(x_train, y_train, x_test, y_test)
+        svm.start()
+
+        lda = LDA(x_train, y_train, x_test, y_test)
+        lda.start()
+
+        rs = RandomForest(x_train, y_train, x_test, y_test)
+        rs.start()
     else:
-        sys.exit()
-
-    knn = KNN(x_train, y_train, x_test, y_test)
-    knn.start()
-
-    svm = SVM(x_train, y_train, x_test, y_test)
-    svm.start()
-
-    lda = LDA(x_train, y_train, x_test, y_test)
-    lda.start()
-
-    rs = RandomForest(x_train, y_train, x_test, y_test)
-    rs.start()
-
-
-
+        if method == 'sift':
+            for k in [200, 500, 1000, 2500, 5000]:
+                for multi in [10, 100, 1000]:
+                    for max_iter in [10, 50, 100, 200, 500]:
+                        for n_init in [1, 5, 10]:
+                            GridSearchSIFT(img_set, k, multi, n_init, max_iter).start()
+        elif method == 'surf':
+            for k in [200, 500, 1000, 2500, 5000]:
+                for multi in [10, 100, 1000]:
+                    for max_iter in [10, 50, 100, 200, 500]:
+                        for n_init in [1, 5, 10]:
+                            GridSearchSURF(img_set, k, multi, n_init, max_iter).start()

@@ -3,7 +3,9 @@ import csv
 import os
 from .base import BaseLoader
 
-GTSRB_PATH = './data/GTSRB'
+ROOT_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+GTSRB_PATH = os.path.join(ROOT_PATH, 'data', 'GTSRB')
+
 GTSRB_TRAIN_URL = 'http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip'
 GTSRB_TEST_URL = 'http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_Images.zip'
 GTSRB_CL_ID_URL = 'http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_GT.zip'

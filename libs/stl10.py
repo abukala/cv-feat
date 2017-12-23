@@ -10,8 +10,11 @@ HEIGHT = 96
 WIDTH = 96
 DEPTH = 3
 
-# path to the directory with the data
-ROOT_DATA_DIR = './data'
+# root path
+ROOT_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+# path to data root
+ROOT_DATA_DIR = os.path.join(ROOT_PATH, 'data')
 
 # path to the stl10 dataset
 DATA_DIR = os.path.join(ROOT_DATA_DIR, 'stl10_binary')

@@ -3,7 +3,6 @@ import sys
 from libs.gtsrb import GTSRB
 from libs.stl10 import STL10
 from libs.classifiers import KNN, SVM, LDA, RandomForest
-from libs.grid import GridSearchSIFT, GridSearchSURF
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -60,14 +59,53 @@ if __name__ == '__main__':
         rs.start()
     else:
         if method == 'sift':
-            for k in [200, 500, 1000, 2000]:
+            for k in [200, 500, 1000, 2500, 5000]:
                 for multi in [10, 25, 50, 100]:
                     for max_iter in [10, 50, 100, 200, 500]:
                         for n_init in [1, 5, 10]:
-                            GridSearchSIFT(img_set, k, multi, n_init, max_iter).start()
+                            (x_train, y_train), (x_test, y_test) = img_set.get_sift(k, multi, n_init, max_iter)
+
+                            logger.info("SIFT-grid || k: %s || multi: %s || max_iter: %s || n_init: %s" % (k, multi, max_iter, n_init))
+
+                            knn = KNN(x_train, y_train, x_test, y_test)
+                            knn.start()
+
+                            svm = SVM(x_train, y_train, x_test, y_test)
+                            svm.start()
+
+                            lda = LDA(x_train, y_train, x_test, y_test)
+                            lda.start()
+
+                            rs = RandomForest(x_train, y_train, x_test, y_test)
+                            rs.start()
+
+                            knn.join()
+                            svm.join()
+                            lda.join()
+                            rs.join()
+
         elif method == 'surf':
             for k in [200, 500, 1000, 2500, 5000]:
-                for multi in [10, 100]:
+                for multi in [10, 25, 50, 100]:
                     for max_iter in [10, 50, 100, 200, 500]:
                         for n_init in [1, 5, 10]:
-                            GridSearchSURF(img_set, k, multi, n_init, max_iter).start()
+                            (x_train, y_train), (x_test, y_test) = img_set.get_sift(k, multi, n_init, max_iter)
+
+                            logger.info("SURF-grid || k: %s || multi: %s || max_iter: %s || n_init: %s" % (k, multi, max_iter, n_init))
+
+                            knn = KNN(x_train, y_train, x_test, y_test)
+                            knn.start()
+
+                            svm = SVM(x_train, y_train, x_test, y_test)
+                            svm.start()
+
+                            lda = LDA(x_train, y_train, x_test, y_test)
+                            lda.start()
+
+                            rs = RandomForest(x_train, y_train, x_test, y_test)
+                            rs.start()
+
+                            knn.join()
+                            svm.join()
+                            lda.join()
+                            rs.join()

@@ -1,0 +1,6 @@
+data/
+*.pyc
+.idea/
+env/
+venv/
+*.out

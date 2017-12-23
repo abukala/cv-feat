@@ -17,7 +17,7 @@ logger.addHandler(sh)
 
 
 if __name__ == '__main__':
-    if len(sys.argv == 4):
+    if len(sys.argv) == 4:
         _, dataset, method, scan = sys.argv
     elif len(sys.argv) == 3:
         _, dataset, method = sys.argv

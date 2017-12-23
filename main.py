@@ -61,13 +61,13 @@ if __name__ == '__main__':
     else:
         if method == 'sift':
             for k in [200, 500, 1000, 2500, 5000]:
-                for multi in [10, 100, 1000]:
+                for multi in [10, 25, 50, 100]:
                     for max_iter in [10, 50, 100, 200, 500]:
                         for n_init in [1, 5, 10]:
                             GridSearchSIFT(img_set, k, multi, n_init, max_iter).start()
         elif method == 'surf':
             for k in [200, 500, 1000, 2500, 5000]:
-                for multi in [10, 100, 1000]:
+                for multi in [10, 100]:
                     for max_iter in [10, 50, 100, 200, 500]:
                         for n_init in [1, 5, 10]:
                             GridSearchSURF(img_set, k, multi, n_init, max_iter).start()

@@ -16,7 +16,7 @@ class GTSRB(BaseLoader):
         self.download_and_extract(GTSRB_TRAIN_URL, './data')
         self.download_and_extract(GTSRB_TEST_URL, './data')
         self.download_and_extract(GTSRB_CL_ID_URL, './data', os.path.join(GTSRB_PATH, 'Final_Test', 'Images'))
-        BaseLoader.__init__(self, **kwargs)
+        BaseLoader.__init__(self, size=(40, 40), **kwargs)
 
     def load_data(self):
         train_dir = os.path.join(GTSRB_PATH, 'Final_Training', 'Images')

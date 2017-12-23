@@ -38,7 +38,7 @@ TEST_LABEL_PATH = os.path.join(DATA_DIR, 'test_y.bin')
 class STL10(BaseLoader):
     def __init__(self, **kwargs):
         self.download_and_extract(DATA_URL, ROOT_DATA_DIR)
-        BaseLoader.__init__(self, **kwargs)
+        BaseLoader.__init__(self, size=(HEIGHT, WIDTH), **kwargs)
 
     def load_data(self):
         x_train = self.read_all_images(TRAIN_DATA_PATH)

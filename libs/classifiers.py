@@ -26,7 +26,7 @@ class SVM(threading.Thread):
         clf = clf.fit(self.x_train, self.y_train)
         y_pred = clf.predict(self.x_test)
         self.score = accuracy_score(self.y_test, y_pred)
-        logger.info("SVM score: %s" % self.score)
+        logger.info("SVM(C: %s) score: %s" % (self.C, self.score))
 
 
 class RandomForest(threading.Thread):
@@ -44,7 +44,7 @@ class RandomForest(threading.Thread):
         clf = clf.fit(self.x_train, self.y_train)
         y_pred = clf.predict(self.x_test)
         self.score = accuracy_score(self.y_test, y_pred)
-        logger.info("Random Forest score: %s" % self.score)
+        logger.info("Random Forest(%s estimators) score: %s" % (self.n_estimators, self.score))
 
 
 class LDA(threading.Thread):
@@ -62,7 +62,7 @@ class LDA(threading.Thread):
         clf = clf.fit(self.x_train, self.y_train)
         y_pred = clf.predict(self.x_test)
         self.score = accuracy_score(self.y_test, y_pred)
-        logger.info("LDA score: %s" % self.score)
+        logger.info("LDA(tol: %s) score: %s" % (self.tol, self.score))
 
 
 class KNN(threading.Thread):
@@ -80,4 +80,4 @@ class KNN(threading.Thread):
         clf = clf.fit(self.x_train, self.y_train)
         y_pred = clf.predict(self.x_test)
         self.score = accuracy_score(self.y_test, y_pred)
-        logger.info("KNN score: %s" % self.score)
+        logger.info("KNN(%s neighbors) score: %s" % (self.n_neighbors, self.score))

@@ -41,18 +41,16 @@ if __name__ == '__main__':
     else:
         sys.exit()
 
-    for n in [1, 10, 100, 1000]:
-        knn = KNN(x_train, y_train, x_test, y_test, n_neighbors=n)
-        knn.start()
+    # knn = KNN(x_train, y_train, x_test, y_test, n_neighbors=n)
+    # knn.start()
 
-    for C in [0.001, 0.01, 0.1, 1]:
-        svm = SVM(x_train, y_train, x_test, y_test, C=C)
-        svm.start()
+    for kernel in ['linear', 'rbf', 'poly']:
+        for C in [1, 5, 10, 100]:
+            svm = SVM(x_train, y_train, x_test, y_test, kernel=kernel, C=C)
+            svm.start()
 
-    for tol in [0.00001, 0.0001, 0.001, 0.01, 0.1]:
-        lda = LDA(x_train, y_train, x_test, y_test, tol=tol)
-        lda.start()
-
-    for n in [1, 10, 100, 500, 1000]:
-        rs = RandomForest(x_train, y_train, x_test, y_test, n_estimators=n)
-        rs.start()
+    # lda = LDA(x_train, y_train, x_test, y_test, tol=tol)
+    # lda.start()
+    #
+    # rs = RandomForest(x_train, y_train, x_test, y_test, n_estimators=n)
+    # rs.start()

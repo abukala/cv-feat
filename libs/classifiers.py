@@ -26,7 +26,7 @@ class SVM(threading.Thread):
         clf = clf.fit(self.x_train, self.y_train)
         y_pred = clf.predict(self.x_test)
         self.score = accuracy_score(self.y_test, y_pred)
-        logger.info("SVM(C: %s) score: %s" % (self.C, self.score))
+        logger.info("SVM(C: %s, %s) score: %s" % (self.C, self.kernel, self.score))
 
 
 class RandomForest(threading.Thread):

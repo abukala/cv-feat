@@ -3,6 +3,7 @@ import sys
 from libs.gtsrb import GTSRB
 from libs.stl10 import STL10
 from libs.mnist import MNIST
+from libs.cifar10 import CIFAR10
 from libs.classifiers import KNN, SVM, LDA, RandomForest
 
 logger = logging.getLogger()
@@ -32,6 +33,8 @@ if __name__ == '__main__':
         img_set = STL10()
     elif dataset == 'mnist':
         img_set = MNIST()
+    elif dataset == 'cifar10':
+        img_set = CIFAR10()
     else:
         sys.exit()
 

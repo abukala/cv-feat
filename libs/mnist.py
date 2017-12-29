@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 # image shape
 HEIGHT = 28
 WIDTH = 28
-DEPTH = 3
 
 # root path
 ROOT_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))

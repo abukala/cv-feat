@@ -2,6 +2,7 @@ import logging
 import sys
 from libs.gtsrb import GTSRB
 from libs.stl10 import STL10
+from libs.mnist import MNIST
 from libs.classifiers import KNN, SVM, LDA, RandomForest
 
 logger = logging.getLogger()
@@ -29,6 +30,8 @@ if __name__ == '__main__':
         img_set = GTSRB()
     elif dataset == 'stl10':
         img_set = STL10()
+    elif dataset == 'mnist':
+        img_set = MNIST()
     else:
         sys.exit()
 
@@ -41,16 +44,14 @@ if __name__ == '__main__':
     else:
         sys.exit()
 
-    # knn = KNN(x_train, y_train, x_test, y_test, n_neighbors=n)
-    # knn.start()
+    knn = KNN(x_train, y_train, x_test, y_test)
+    knn.start()
 
-    for kernel in ['linear', 'rbf', 'poly']:
-        for C in [1, 5, 10, 100]:
-            svm = SVM(x_train, y_train, x_test, y_test, kernel=kernel, C=C)
-            svm.start()
+    svm = SVM(x_train, y_train, x_test, y_test)
+    svm.start()
 
-    # lda = LDA(x_train, y_train, x_test, y_test, tol=tol)
-    # lda.start()
-    #
-    # rs = RandomForest(x_train, y_train, x_test, y_test, n_estimators=n)
-    # rs.start()
+    lda = LDA(x_train, y_train, x_test, y_test)
+    lda.start()
+
+    rs = RandomForest(x_train, y_train, x_test, y_test)
+    rs.start()

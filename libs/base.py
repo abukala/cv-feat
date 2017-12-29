@@ -165,12 +165,12 @@ class BaseLoader:
                 sys.stdout.flush()
 
             filepath, _ = urllib.request.urlretrieve(url, filepath, reporthook=_progress)
-            filetype = filepath.split('.')[-1]
             if not dest_path:
                 dest_path = path
-            if filetype == 'gz':
+
+            if filepath.split('.')[-2] == 'tar':
                 tarfile.open(filepath, 'r:gz').extractall(dest_path)
-            elif filetype == 'zip':
+            elif filepath.split('.')[-1] == 'zip':
                 zipfile.ZipFile(filepath, 'r').extractall(dest_path)
 
             sys.stdout.write("\n Data extracted to %s" % dest_path)

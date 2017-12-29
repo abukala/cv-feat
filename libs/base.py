@@ -8,13 +8,21 @@ import os
 import urllib.request
 import tarfile
 import zipfile
+import threading
 logger = logging.getLogger(__name__)
 
 
-class BaseLoader:
+class BaseLoader(threading.Thread):
     def __init__(self, **kwargs):
-        (self.x_train, self.y_train), (self.x_test, self.y_test) = self.load_data()
         self.size = kwargs.get('size')
+        (self.x_train, self.y_train), (self.x_test, self.y_test) = self.load_data()
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.pix = self.get_pix()
+        self.hog = self.get_hog()
+        self.sift = self.get_sift()
+        self.surf = self.get_surf()
 
     def load_data(self):
         logger.error("Load data function not overriden, exiting...")

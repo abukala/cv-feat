@@ -1,10 +1,12 @@
 import logging
 import sys
+import argparse
 from libs.gtsrb import GTSRB
 from libs.stl10 import STL10
 from libs.mnist import MNIST
 from libs.cifar10 import CIFAR10
 from libs.classifiers import KNN, SVM, LDA, RandomForest
+import pickle
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -18,43 +20,69 @@ logger.addHandler(sh)
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 3:
-        _, dataset, method = sys.argv
-    elif len(sys.argv) == 2:
-        _, dataset = sys.argv
-        method = None
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset')
+    parser.add_argument('--method')
+    parser.add_argument('--process')
+    args = parser.parse_args()
+
+    if args.dataset:
+        if args.dataset == 'gtsrb':
+            img_set = GTSRB()
+        elif args.dataset == 'stl10':
+            img_set = STL10()
+        elif args.dataset == 'mnist':
+            img_set = MNIST()
+        elif args.dataset == 'cifar10':
+            img_set = CIFAR10()
+        else:
+            sys.exit()
+
+        if args.method == 'sift':
+            data = img_set.get_sift()
+        elif args.method == 'surf':
+            data = img_set.get_surf()
+        elif args.method == 'hog':
+            data = img_set.get_hog()
+        else:
+            sys.exit()
+
+        knn = KNN(data)
+        knn.start()
+
+        svm = SVM(data)
+        svm.start()
+
+        lda = LDA(data)
+        lda.start()
+
+        rf = RandomForest(data)
+        rf.start()
     else:
-        logger.error("Insufficient args, exiting...")
-        sys.exit()
+        if not args.process:
+            results = {}
 
-    if dataset == 'gtsrb':
-        img_set = GTSRB()
-    elif dataset == 'stl10':
-        img_set = STL10()
-    elif dataset == 'mnist':
-        img_set = MNIST()
-    elif dataset == 'cifar10':
-        img_set = CIFAR10()
-    else:
-        sys.exit()
+            gtsrb = GTSRB().start()
+            stl = STL10().start()
+            mnist = MNIST().start()
+            cifar = CIFAR10().start()
 
-    if method == 'sift':
-        (x_train, y_train), (x_test, y_test) = img_set.get_sift()
-    elif method == 'surf':
-        (x_train, y_train), (x_test, y_test) = img_set.get_surf()
-    elif method == 'hog':
-        (x_train, y_train), (x_test, y_test) = img_set.get_hog()
-    else:
-        sys.exit()
+            gtsrb.join()
+            stl.join()
+            mnist.join()
+            cifar.join()
 
-    knn = KNN(x_train, y_train, x_test, y_test)
-    knn.start()
+            for ds_name in ['gtsrb', 'stl', 'mnist', 'cifar']:
+                for method in ['pix', 'hog', 'sift', 'surf']:
+                    dataset = eval(ds_name)
+                    knn = KNN(getattr(dataset, method)).start()
+                    svm = SVM(getattr(dataset, method)).start()
+                    lda = LDA(getattr(dataset, method)).start()
+                    rf = RandomForest(getattr(dataset, method)).start()
 
-    svm = SVM(x_train, y_train, x_test, y_test)
-    svm.start()
+                    for clf_name in ['knn', 'svm', 'lda', 'rf']:
+                        clf = eval(clf_name)
+                        clf.join()
+                        results[ds_name][method][clf_name] = clf.score
 
-    lda = LDA(x_train, y_train, x_test, y_test)
-    lda.start()
-
-    rs = RandomForest(x_train, y_train, x_test, y_test)
-    rs.start()
+            pickle.dump(results, open('results.p', 'wb'))

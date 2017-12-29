@@ -10,11 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class SVM(threading.Thread):
-    def __init__(self, x_train, y_train, x_test, y_test, kernel='linear', C=0.1, tol=0.01):
-        self.x_train = x_train
-        self.y_train = y_train
-        self.x_test = x_test
-        self.y_test = y_test
+    def __init__(self, data, kernel='linear', C=0.1, tol=0.01):
+        (self.x_train, self.y_train), (self.x_test, self.y_test) = data
         self.kernel = kernel
         self.C = C
         self.tol = tol
@@ -30,11 +27,8 @@ class SVM(threading.Thread):
 
 
 class RandomForest(threading.Thread):
-    def __init__(self, x_train, y_train, x_test, y_test, n_estimators=100):
-        self.x_train = x_train
-        self.y_train = y_train
-        self.x_test = x_test
-        self.y_test = y_test
+    def __init__(self, data, n_estimators=100):
+        (self.x_train, self.y_train), (self.x_test, self.y_test) = data
         self.n_estimators = n_estimators
         self.score = None
         threading.Thread.__init__(self)
@@ -48,11 +42,8 @@ class RandomForest(threading.Thread):
 
 
 class LDA(threading.Thread):
-    def __init__(self, x_train, y_train, x_test, y_test, tol=0.1):
-        self.x_train = x_train
-        self.y_train = y_train
-        self.x_test = x_test
-        self.y_test = y_test
+    def __init__(self, data, tol=0.1):
+        (self.x_train, self.y_train), (self.x_test, self.y_test) = data
         self.tol = tol
         self.score = None
         threading.Thread.__init__(self)
@@ -66,11 +57,8 @@ class LDA(threading.Thread):
 
 
 class KNN(threading.Thread):
-    def __init__(self, x_train, y_train, x_test, y_test, n_neighbors=10):
-        self.x_train = x_train
-        self.y_train = y_train
-        self.x_test = x_test
-        self.y_test = y_test
+    def __init__(self, data, n_neighbors=10):
+        (self.x_train, self.y_train), (self.x_test, self.y_test) = data
         self.n_neighbors = n_neighbors
         self.score = None
         threading.Thread.__init__(self)

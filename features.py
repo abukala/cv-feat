@@ -14,7 +14,7 @@ def get_hog(X, pixels_per_cell=(5, 5), cells_per_block=(6, 6), orientations=8):
     return X
 
 
-def get_surf(X, k=500, multi=100, n_init=1, max_iter=10):
+def get_surf(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
     surf = cv2.xfeatures2d.SURF_create()
     descriptors = []
     for image in X:
@@ -24,12 +24,12 @@ def get_surf(X, k=500, multi=100, n_init=1, max_iter=10):
         else:
             descriptors.append([])
 
-    hist = _get_hist(X, k, multi, n_init, max_iter)
+    hist, kmeans = _get_hist(X, kmeans, k, multi, n_init, max_iter)
 
-    return hist
+    return hist, kmeans
 
 
-def _get_hist(X, k=500, multi=100, n_init=1, max_iter=10):
+def _get_hist(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
     X_list = []
     for group in X:
         X_list.extend(group)
@@ -39,7 +39,10 @@ def _get_hist(X, k=500, multi=100, n_init=1, max_iter=10):
         choice = X_list[np.random.choice(len(X), k*multi, replace=False)]
     else:
         choice = X_list
-    kmeans = KMeans(n_clusters=k, n_init=n_init, max_iter=max_iter).fit(choice)
+
+    if not kmeans:
+        kmeans = KMeans(n_clusters=k, n_init=n_init, max_iter=max_iter).fit(choice)
+
     predictions = kmeans.predict(X_list)
     idx = []
     for group in X:
@@ -52,10 +55,10 @@ def _get_hist(X, k=500, multi=100, n_init=1, max_iter=10):
     bins = np.arange(k)
     hist = [np.histogram(i, bins=bins)[0] for i in idx]
 
-    return hist
+    return hist, kmeans
 
 
-def get_sift(X, k=500, multi=100, n_init=1, max_iter=10):
+def get_sift(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
     sift = cv2.xfeatures2d.SIFT_create()
     descriptors = []
     for image in X:
@@ -65,9 +68,9 @@ def get_sift(X, k=500, multi=100, n_init=1, max_iter=10):
         else:
             descriptors.append([])
 
-    hist = _get_hist(X, k, multi, n_init, max_iter)
+    hist, kmeans = _get_hist(X, kmeans, k, multi, n_init, max_iter)
 
-    return hist
+    return hist, kmeans
 
 
 def get_pix(X):

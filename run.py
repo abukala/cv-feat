@@ -32,12 +32,12 @@ def run():
 
         feature = trial['Feature']
         if feature == 'sift':
-            X_train = get_sift(X_train)
-            X_test = get_sift(X_test)
+            X_train, kmeans = get_sift(X_train)
+            X_test, _ = get_sift(X_test, kmeans)
             X_train, X_test = normalize_hist(X_train, X_test)
         elif feature == 'surf':
-            X_train = get_surf(X_train)
-            X_test = get_surf(X_test)
+            X_train, kmeans = get_surf(X_train)
+            X_test, _ = get_surf(X_test, kmeans)
             X_train, X_test = normalize_hist(X_train, X_test)
         elif feature == 'hog':
             X_train = get_hog(X_train)

@@ -1,5 +1,10 @@
-from .. import databases
-from .. import datasets
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+import databases
+import datasets
 
 parameters = {
     'KNN': {

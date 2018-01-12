@@ -147,8 +147,7 @@ def _columns(score):
 
 def _selector(trial):
     selector = 'WHERE '
-
-    for k, v in trial.iteritems():
+    for k, v in trial.items():
         if k == 'Score':
             continue
 

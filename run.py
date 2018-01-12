@@ -10,6 +10,14 @@ from sklearn.ensemble import RandomForestClassifier as RFC
 from sklearn.svm import SVC as SVM
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 
+import logging
+logger = logging.getLogger('runner')
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-4s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 N_PROCESSES = 24
 
@@ -20,6 +28,10 @@ def run():
 
         if trial is None:
             break
+
+        logging.info("Starting - dataset: %s - feature: %s - clf: %s" % (trial['Dataset'],
+                                                                         trial['Feature'],
+                                                                         trial('Classifier')))
 
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
@@ -50,6 +62,11 @@ def run():
 
         predictions = clf.predict(X_test)
         score = metrics.accuracy_score(y_test, predictions)
+
+        logging.info("Finished - dataset: %s - feature: %s - clf: %s - score: %s" % (trial['Dataset'],
+                                                                                     trial['Feature'],
+                                                                                     trial('Classifier'),
+                                                                                     score))
 
         submit_result(trial, score)
 

@@ -31,7 +31,7 @@ def run():
 
         logging.info("Starting - dataset: %s - feature: %s - clf: %s" % (trial['Dataset'],
                                                                          trial['Feature'],
-                                                                         trial('Classifier')))
+                                                                         trial['Classifier']))
 
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
@@ -65,7 +65,7 @@ def run():
 
         logging.info("Finished - dataset: %s - feature: %s - clf: %s - score: %s" % (trial['Dataset'],
                                                                                      trial['Feature'],
-                                                                                     trial('Classifier'),
+                                                                                     trial['Classifier'],
                                                                                      score))
 
         submit_result(trial, score)

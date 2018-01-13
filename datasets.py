@@ -148,7 +148,7 @@ def load(name):
         y_train = []
         for batch in train_data:
             for img, label in zip(batch[b'data'], batch[b'labels']):
-                np.append(x_train, np.reshape(img, shape))
+                x_train = np.append(x_train, np.reshape(img, shape))
                 y_train.append(label)
 
         assert len(x_train) == len(y_train)

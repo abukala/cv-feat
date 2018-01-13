@@ -152,7 +152,7 @@ def load(name):
         assert len(x_train) == len(y_train)
         assert x_train[0].shape == shape
 
-        with open(os.path.join(DATA_PATH, 'test_batch'), 'rb') as f:
+        with open(os.path.join(cifar_path, 'test_batch'), 'rb') as f:
             test_data = pickle.load(f, encoding='bytes')
 
         x_test = [np.reshape(img, shape) for img in test_data[b'data']]

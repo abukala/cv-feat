@@ -58,7 +58,7 @@ def run():
             X_train = get_pix(X_train)
             X_test = get_pix(X_test)
 
-        clf.fit(X_train, X_test)
+        clf.fit(X_train, y_train)
 
         predictions = clf.predict(X_test)
         score = metrics.accuracy_score(y_test, predictions)

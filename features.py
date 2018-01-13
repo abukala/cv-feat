@@ -36,7 +36,7 @@ def _get_hist(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
     X_list = np.array(X_list)
 
     if k*multi < len(X_list):
-        choice = X_list[np.random.choice(len(X), k*multi, replace=False)]
+        choice = X_list[np.random.choice(len(X_list), k*multi, replace=False)]
     else:
         choice = X_list
 

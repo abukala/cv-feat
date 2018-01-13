@@ -54,7 +54,8 @@ def download(url):
 def load(name):
     assert name in DATASET_NAMES
 
-    download(DATA_URLS[name])
+    for url in DATA_URLS[name]:
+        download(url)
 
     if name == 'gtsrb':
         train_dir = os.path.join(DATA_PATH, 'GTSRB', 'Final_Training', 'Images')

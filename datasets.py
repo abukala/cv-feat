@@ -98,7 +98,7 @@ def load(name):
             rows = struct.unpack('>i', file.read(4))[0]
             cols = struct.unpack('>i', file.read(4))[0]
             l = rows * cols
-            images = [np.array(np.reshape(struct.unpack('>%sB' % l, file.read(l)), (rows, cols)), dtype=np.uint8) for _ in range(images_count)]
+            images = np.array([np.reshape(struct.unpack('>%sB' % l, file.read(l)), (rows, cols)) for _ in range(images_count)], dtype=np.uint8)
             assert len(images) == images_count
             assert images[0].shape == (rows, cols)
 

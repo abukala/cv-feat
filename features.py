@@ -24,7 +24,7 @@ def get_surf(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
         else:
             descriptors.append([])
 
-    hist, kmeans = _get_hist(X, kmeans, k, multi, n_init, max_iter)
+    hist, kmeans = _get_hist(descriptors, kmeans, k, multi, n_init, max_iter)
 
     return hist, kmeans
 
@@ -68,7 +68,7 @@ def get_sift(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
         else:
             descriptors.append([])
 
-    hist, kmeans = _get_hist(X, kmeans, k, multi, n_init, max_iter)
+    hist, kmeans = _get_hist(descriptors, kmeans, k, multi, n_init, max_iter)
 
     return hist, kmeans
 

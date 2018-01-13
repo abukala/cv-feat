@@ -2,6 +2,7 @@ import os
 import sqlite3
 import datetime
 import pandas as pd
+import sys
 
 
 RESULTS_PATH = os.path.join(os.path.dirname(__file__), 'results')
@@ -177,9 +178,14 @@ if __name__ == '__main__':
         if not os.path.exists(path):
             databases_exist = False
 
-    if databases_exist:
-        print('Exporting results...')
-        export()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'clear':
+            print('Clearing active tasks...')
+            clear_active()
     else:
-        print('Creating databases...')
-        initialize()
+        if databases_exist:
+            print('Exporting results...')
+            export()
+        else:
+            print('Creating databases...')
+            initialize()

@@ -38,7 +38,7 @@ def run():
 
         params = eval(trial['Parameters'])
 
-        clf = eval(trial['Classifier'])(params['clf_params'])
+        clf = eval(trial['Classifier'])(**params['clf_params'])
 
         (X_train, y_train), (X_test, y_test) = load(trial['Dataset'])
 

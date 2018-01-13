@@ -126,12 +126,14 @@ def load(name):
                 images = np.transpose(images, (0, 3, 2, 1))
                 return images
 
-        x_train = _load_images(os.path.join(DATA_PATH, 'train_X.bin'))
-        x_test = _load_images(os.path.join(DATA_PATH, 'test_X.bin'))
+        stl10_path = os.path.join(DATA_PATH, 'stl10_binary')
 
-        with open(os.path.join(DATA_PATH, 'train_y.bin')) as f:
+        x_train = _load_images(os.path.join(stl10_path, 'train_X.bin'))
+        x_test = _load_images(os.path.join(stl10_path, 'test_X.bin'))
+
+        with open(os.path.join(stl10_path, 'train_y.bin')) as f:
             y_train = np.fromfile(f, dtype=np.uint8)
-        with open(os.path.join(DATA_PATH, 'test_y.bin')) as f:
+        with open(os.path.join(stl10_path, 'test_y.bin')) as f:
             y_test = np.fromfile(f, dtype=np.uint8)
 
     elif name == 'cifar10':

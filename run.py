@@ -29,7 +29,7 @@ def run():
         if trial is None:
             break
 
-        logging.info("Starting - dataset: %s - feature: %s - clf: %s" % (trial['Dataset'],
+        logger.info("Starting - dataset: %s - feature: %s - clf: %s" % (trial['Dataset'],
                                                                          trial['Feature'],
                                                                          trial['Classifier']))
 
@@ -63,7 +63,7 @@ def run():
         predictions = clf.predict(X_test)
         score = metrics.accuracy_score(y_test, predictions)
 
-        logging.info("Finished - dataset: %s - feature: %s - clf: %s - score: %s" % (trial['Dataset'],
+        logger.info("Finished - dataset: %s - feature: %s - clf: %s - score: %s" % (trial['Dataset'],
                                                                                      trial['Feature'],
                                                                                      trial['Classifier'],
                                                                                      score))

@@ -137,8 +137,9 @@ def load(name):
     elif name == 'cifar10':
         shape = (32, 32, 3)
         train_data = []
+        cifar_path = os.path.join(DATA_PATH, 'cifar-10-batches-py')
         for num in range(1, 6):
-            with open(os.path.join(DATA_PATH, 'data_batch_%s' % num), 'rb') as f:
+            with open(os.path.join(cifar_path, 'data_batch_%s' % num), 'rb') as f:
                 train_data.append(pickle.load(f, encoding='bytes'))
 
         x_train = []

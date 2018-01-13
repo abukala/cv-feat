@@ -6,4 +6,4 @@
 
 module add plgrid/tools/python/3.5.2
 
-python3 ${1}
+python3 ${1} ${@:2}

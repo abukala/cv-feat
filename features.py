@@ -7,7 +7,8 @@ logger = logging.getLogger(__name__)
 
 
 def get_hog(X, pixels_per_cell=(5, 5), cells_per_block=(6, 6), orientations=8):
-    X = [cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) for img in X]
+    if len(X.shape) > 3:
+        X = [cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) for img in X]
     X = [hog(img, orientations=orientations, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block,
                    block_norm='L1-sqrt') for img in X]
 

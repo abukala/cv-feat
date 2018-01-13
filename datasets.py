@@ -111,7 +111,7 @@ def load(name):
             labels = struct.unpack('>%sB' % items_count, file.read(items_count))
             assert len(labels) == items_count
 
-            return labels
+            return np.array(labels)
 
         x_train = _load_images(TRAIN_DATA_PATH)
         x_test = _load_images(TEST_DATA_PATH)

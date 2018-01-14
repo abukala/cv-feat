@@ -82,7 +82,7 @@ def initialize():
 def _select(trial=None, database_path=None, connection=None, fetch='one'):
     assert fetch in ['one', 'all']
 
-    command = 'SELECT * FROM Trials'
+    command = 'SELECT * FROM Trials ORDER BY Dataset, Feature'
 
     if trial is not None:
         command += ' %s' % _selector(trial)

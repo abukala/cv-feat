@@ -144,15 +144,17 @@ def load(name):
             with open(os.path.join(cifar_path, 'data_batch_%s' % num), 'rb') as f:
                 train_data.append(pickle.load(f, encoding='bytes'))
 
-        x_train = np.array([])
+        x_train = []
         y_train = []
         for batch in train_data:
             for img, label in zip(batch[b'data'], batch[b'labels']):
-                x_train = np.append(x_train, np.reshape(img, shape))
+                x_train.append(np.reshape(img, shape))
                 y_train.append(label)
 
         assert len(x_train) == len(y_train)
         assert x_train[0].shape == shape
+
+        x_train = np.array(x_train)
 
         with open(os.path.join(cifar_path, 'test_batch'), 'rb') as f:
             test_data = pickle.load(f, encoding='bytes')

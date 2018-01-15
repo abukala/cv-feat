@@ -183,7 +183,7 @@ def _resize(images, size):
         assert image.shape[0] == image.shape[1], "Cropping didnt work, shape: %s" % image.shape[:2]
         X.append(image)
 
-    return [cv2.resize(img, size) for img in X]
+    return np.array([cv2.resize(img, size) for img in X])
 
 
 if __name__ == '__main__':

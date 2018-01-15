@@ -36,28 +36,32 @@ def run():
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
 
-        params = eval(trial['Parameters'])
-
-        clf = eval(trial['Classifier'])(**params['clf_params'])
-
         (X_train, y_train), (X_test, y_test) = load(trial['Dataset'])
 
         feature = trial['Feature']
+        params = {}
+        if 'feature_params' in trial['Parameters']:
+            feature_params = trial['Parameters']['feature_params']
+            if feature in feature_params:
+                params = feature_params[feature]
+
         if feature == 'sift':
-            X_train, kmeans = get_sift(X_train)
-            X_test, _ = get_sift(X_test, kmeans)
+            X_train, kmeans = get_sift(X_train, **params)
+            X_test, _ = get_sift(X_test, kmeans, **params)
             X_train, X_test = normalize_hist(X_train, X_test)
         elif feature == 'surf':
-            X_train, kmeans = get_surf(X_train)
-            X_test, _ = get_surf(X_test, kmeans)
+            X_train, kmeans = get_surf(X_train, **params)
+            X_test, _ = get_surf(X_test, kmeans, **params)
             X_train, X_test = normalize_hist(X_train, X_test)
         elif feature == 'hog':
-            X_train = get_hog(X_train)
-            X_test = get_hog(X_test)
+            X_train = get_hog(X_train, **params)
+            X_test = get_hog(X_test, **params)
         elif feature == 'none':
             X_train = get_pix(X_train)
             X_test = get_pix(X_test)
 
+        clf_params = eval(trial['Parameters']['clf_params'])
+        clf = eval(trial['Classifier'])(**clf_params)
         clf.fit(X_train, y_train)
 
         predictions = clf.predict(X_test)

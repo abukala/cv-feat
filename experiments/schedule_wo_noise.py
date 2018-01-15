@@ -23,6 +23,19 @@ parameters = {
     }
 }
 
+feature_params = {
+    'gtsrb': {
+        'hog': {
+            'pixels_per_cell': (5, 5),
+            'cells_per_block': (6, 6),
+            'n_orientations': 8
+        }
+    },
+    'mnist': {},
+    'stl10': {},
+    'cifar10': {}
+}
+
 for dataset in datasets.DATASET_NAMES:
     for feature in ['none', 'sift', 'surf', 'hog']:
         for classifier in ['KNN', 'LDA', 'SVM', 'RFC']:
@@ -30,7 +43,8 @@ for dataset in datasets.DATASET_NAMES:
                 'Dataset': dataset,
                 'Feature': feature,
                 'Parameters': {
-                    'clf_params': parameters[classifier]
+                    'clf_params': parameters[classifier],
+                    'feature_params': feature_params[dataset]
                 },
                 'Classifier': classifier
             }

@@ -76,11 +76,18 @@ def get_sift(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
 
 def get_pix(X):
     # Normalize images
-    X = [cv2.normalize(img, img, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F) for img in X]
+    X = _normalize_images(X)
     # Flatten data
     X = [x.flatten() for x in X]
 
     return X
+
+
+def _normalize_images(X):
+    v_min = X.min(axis=(0, 1), keepdims=True)
+    v_max = X.max(axis=(0, 1), keepdims=True)
+
+    return (X - v_min)/(v_max - v_min)
 
 
 def normalize_hist(X_train, X_test):

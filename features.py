@@ -76,6 +76,7 @@ def get_sift(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
 
 def get_pix(X):
     # Normalize images
+    assert X.dtype == np.dtype('uint8') and X[0][..., 0].min() >= 0 and X[0][..., 0].max() <= 255
     X = [img/255 for img in X]
     # Flatten data
     X = [x.flatten() for x in X]

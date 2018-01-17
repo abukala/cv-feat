@@ -28,7 +28,7 @@ feature_params = {
         'hog': {
             'pixels_per_cell': (5, 5),
             'cells_per_block': (6, 6),
-            'n_orientations': 8
+            'orientations': 8
         }
     },
     'mnist': {},

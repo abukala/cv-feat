@@ -85,7 +85,9 @@ def _select(trial=None, database_path=None, connection=None, fetch='one'):
     command = 'SELECT * FROM Trials'
 
     if trial is not None:
-        command += ' %s ORDER BY Dataset, Feature' % _selector(trial)
+        command += ' %s' % _selector(trial)
+
+    command += ' ORDER BY Dataset, Feature'
 
     return _execute(command, database_path=database_path, connection=connection, fetch=fetch)
 

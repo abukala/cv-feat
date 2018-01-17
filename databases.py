@@ -52,13 +52,6 @@ def clear_active():
         _insert(trial, PENDING_PATH)
 
 
-def clear_finished():
-    trials = _select(database_path=FINISHED_PATH, fetch='all')
-
-    for trial in trials:
-        _delete(trial, FINISHED_PATH)
-
-
 def export(path=None, database_path=FINISHED_PATH):
     if path is None:
         timestamp = '{:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
@@ -188,12 +181,9 @@ if __name__ == '__main__':
             databases_exist = False
 
     if len(sys.argv) > 1:
-        if sys.argv[1] == 'clear_active':
+        if sys.argv[1] == 'clear':
             print('Clearing active tasks...')
             clear_active()
-        elif sys.argv[1] == 'clear_finished':
-            print('Clearing finished tasks...')
-            clear_finished()
     else:
         if databases_exist:
             print('Exporting results...')

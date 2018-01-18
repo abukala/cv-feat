@@ -1,7 +1,7 @@
 import multiprocessing as mp
 
 from databases import pull_pending, submit_result
-from datasets import load
+from datasets import cifar10, stl10, gtsrb, mnist
 from features import get_sift, get_surf, get_hog, normalize_hist, get_pix
 
 from sklearn import metrics
@@ -33,10 +33,12 @@ def run():
                                                                          trial['Feature'],
                                                                          trial['Classifier']))
 
+        assert trial['Dataset'] in ['gtsrb', 'cifar10', 'stl10', 'mnist']
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
 
-        (X_train, y_train), (X_test, y_test) = load(trial['Dataset'])
+        ds = eval(trial['Dataset'])
+        (X_train, y_train), (X_test, y_test) = ds.load_training_data(), ds.load_test_data()
 
         feature = trial['Feature']
         params = eval(trial['Parameters'])

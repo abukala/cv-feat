@@ -14,9 +14,6 @@ _images_per_file = 10000
 _num_images_train = _num_files_train * _images_per_file
 
 
-def _get_file_path(filename=""):
-    return os.path.join(DATA_PATH, "cifar-10-batches-py/", filename)
-
 
 def _load_data(filename):
     data = _unpickle(filename)
@@ -28,9 +25,9 @@ def _load_data(filename):
 
 
 def _unpickle(filename):
-    file_path = _get_file_path(filename)
+    file_path = DATA_PATH / 'cifar-10-batches-py' / filename
 
-    with open(file_path, mode='rb') as file:
+    with file_path.open() as file:
         data = pickle.load(file, encoding='bytes')
 
     return data

@@ -64,7 +64,7 @@ def export(path=None, database_path=FINISHED_PATH):
 
 
 def initialize():
-    if RESULTS_PATH.exists():
+    if not RESULTS_PATH.exists():
         RESULTS_PATH.mkdir()
 
     for path in [PENDING_PATH, ACTIVE_PATH, FINISHED_PATH]:
@@ -130,7 +130,7 @@ def _execute(command, connection=None, database_path=None, fetch='none'):
 
 
 def _connect(database_path, exclusive=False, timeout=600.0):
-    connection = sqlite3.connect(database_path, timeout=timeout)
+    connection = sqlite3.connect(str(database_path.absolute()), timeout=timeout)
     connection.row_factory = _dict_factory
 
     if exclusive:

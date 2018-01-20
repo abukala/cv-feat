@@ -1,4 +1,3 @@
-import os
 import sqlite3
 import datetime
 import pandas as pd
@@ -65,11 +64,11 @@ def export(path=None, database_path=FINISHED_PATH):
 
 
 def initialize():
-    if not os.path.exists(RESULTS_PATH):
-        os.makedirs(RESULTS_PATH)
+    if RESULTS_PATH.exists():
+        RESULTS_PATH.mkdir()
 
     for path in [PENDING_PATH, ACTIVE_PATH, FINISHED_PATH]:
-        if not os.path.exists(path):
+        if not path.exists():
             if path == FINISHED_PATH:
                 columns = _columns(score=True)
             else:

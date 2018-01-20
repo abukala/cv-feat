@@ -179,7 +179,7 @@ if __name__ == '__main__':
         databases_exist = False
 
     for path in [PENDING_PATH, ACTIVE_PATH, FINISHED_PATH]:
-        if not os.path.exists(path):
+        if not path.exists():
             databases_exist = False
 
     if len(sys.argv) > 1:

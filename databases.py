@@ -175,7 +175,7 @@ def _dict_factory(cursor, row):
 if __name__ == '__main__':
     databases_exist = True
 
-    if not os.path.exists(RESULTS_PATH):
+    if not RESULTS_PATH.exists():
         databases_exist = False
 
     for path in [PENDING_PATH, ACTIVE_PATH, FINISHED_PATH]:

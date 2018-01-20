@@ -2,13 +2,14 @@ import os
 import sqlite3
 import datetime
 import pandas as pd
+import pathlib
 import sys
 
 
-RESULTS_PATH = os.path.join(os.path.dirname(__file__), 'results')
-PENDING_PATH = os.path.join(RESULTS_PATH, 'pending.db')
-ACTIVE_PATH = os.path.join(RESULTS_PATH, 'active.db')
-FINISHED_PATH = os.path.join(RESULTS_PATH, 'finished.db')
+RESULTS_PATH = pathlib.Path() / 'results'
+PENDING_PATH = RESULTS_PATH / 'pending.db'
+ACTIVE_PATH = RESULTS_PATH / 'active.db'
+FINISHED_PATH = RESULTS_PATH / 'finished.db'
 
 
 def add_to_pending(trial, check_presence=True):
@@ -55,7 +56,8 @@ def clear_active():
 def export(path=None, database_path=FINISHED_PATH):
     if path is None:
         timestamp = '{:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
-        path = os.path.join(RESULTS_PATH, 'results_%s.csv' % timestamp)
+        filename = 'results_%s.csv' % timestamp
+        path = RESULTS_PATH / filename
 
     trials = _select(database_path=database_path, fetch='all')
     df = pd.DataFrame(trials, columns=_columns(score=(database_path == FINISHED_PATH)))
@@ -184,6 +186,13 @@ if __name__ == '__main__':
         if sys.argv[1] == 'clear':
             print('Clearing active tasks...')
             clear_active()
+        elif sys.argv[1] == 'export':
+            filename = sys.argv[2]
+            if not filename.endswith('.csv'):
+                filename += '.csv'
+            path = RESULTS_PATH / filename
+            export(path=path)
+
     else:
         if databases_exist:
             print('Exporting results...')

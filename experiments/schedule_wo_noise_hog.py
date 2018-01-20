@@ -4,7 +4,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import databases
-import datasets
 
 parameters = {
     'KNN': {
@@ -28,7 +27,7 @@ feature_params = {
         'hog': {
             'pixels_per_cell': (5, 5),
             'cells_per_block': (6, 6),
-            'orientations': 8
+            'orientations': 9
         }
     },
     'mnist': {},
@@ -36,8 +35,8 @@ feature_params = {
     'cifar10': {}
 }
 
-for dataset in datasets.DATASET_NAMES:
-    for feature in ['none', 'sift', 'surf', 'hog']:
+for dataset in ['gtsrb', 'stl10', 'cifar10', 'mnist']:
+    for feature in ['none', 'hog']:
         for classifier in ['KNN', 'LDA', 'SVM', 'RFC']:
             trial = {
                 'Dataset': dataset,

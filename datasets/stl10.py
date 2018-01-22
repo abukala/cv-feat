@@ -6,7 +6,7 @@ download_url = "http://ai.stanford.edu/~acoates/stl10/stl10_binary.tar.gz"
 
 
 def _load_images(url):
-    with open(url, 'rb') as f:
+    with url.open(mode='rb') as f:
         everything = np.fromfile(f, dtype=np.uint8)
         images = np.reshape(everything, (-1, 3, 96, 96))
         images = np.transpose(images, (0, 3, 2, 1))

@@ -33,7 +33,7 @@ def load_training_data():
 
 def load_test_data():
     x_test, y_test = [], []
-    gt_file = csv.reader(open(gt_file_path), delimiter=';')
+    gt_file = csv.reader(gt_file_path.open(), delimiter=';')
 
     next(gt_file)
     for row in gt_file:

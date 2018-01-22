@@ -16,7 +16,7 @@ download_url = [
 
 
 def _load_images(url):
-    file = gzip.open(url, 'rb')
+    file = gzip.open(url.open(mode='rb'))
     _ = file.read(4)
     images_count = struct.unpack('>i', file.read(4))[0]
     rows = struct.unpack('>i', file.read(4))[0]
@@ -30,7 +30,7 @@ def _load_images(url):
 
 
 def _load_labels(url):
-    file = gzip.open(url, 'rb')
+    file = gzip.open(url.open(mode='rb'))
     _ = file.read(4)
     items_count = struct.unpack('>i', file.read(4))[0]
     labels = struct.unpack('>%sB' % items_count, file.read(items_count))

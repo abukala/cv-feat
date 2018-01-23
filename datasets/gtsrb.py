@@ -15,7 +15,7 @@ download_url = [
 
 
 def load_training_data():
-    path = train_dir.absolute()
+    path = str(train_dir.absolute())
     x_train, y_train = [], []
     for (dir_path, dir_names, files) in os.walk(path):
         dir_name = os.path.basename(dir_path)

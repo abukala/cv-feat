@@ -15,7 +15,8 @@ def _load_images(url):
 
 def load_training_data():
     images = _load_images(stl10_path / 'train_X.bin')
-    with open(stl10_path / 'train_y.bin') as f:
+    path = stl10_path / 'train_y.bin'
+    with path.open() as f:
         clf = np.fromfile(f, dtype=np.uint8)
 
     return images, clf
@@ -23,7 +24,8 @@ def load_training_data():
 
 def load_test_data():
     images = _load_images(stl10_path / 'test_X.bin')
-    with open(stl10_path / 'test_y.bin') as f:
+    path = stl10_path / 'test_y.bin'
+    with path.open() as f:
         clf = np.fromfile(f, dtype=np.uint8)
 
     return images, clf

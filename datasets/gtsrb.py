@@ -15,8 +15,9 @@ download_url = [
 
 
 def load_training_data():
+    path = train_dir.absolute()
     x_train, y_train = [], []
-    for (dir_path, dir_names, files) in os.walk(train_dir):
+    for (dir_path, dir_names, files) in os.walk(path):
         dir_name = os.path.basename(dir_path)
         if not dir_name.isdigit():
             continue
@@ -38,7 +39,7 @@ def load_test_data():
     next(gt_file)
     for row in gt_file:
         class_id = int(row[7])
-        img = cv2.imread(os.path.join(test_dir, row[0]))
+        img = cv2.imread(test_dir / row[0])
         x_test.append(img)
         y_test.append(class_id)
 

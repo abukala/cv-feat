@@ -35,11 +35,11 @@ def load_training_data():
 def load_test_data():
     x_test, y_test = [], []
     gt_file = csv.reader(gt_file_path.open(), delimiter=';')
-
+    path = str(test_dir.absolute())
     next(gt_file)
     for row in gt_file:
         class_id = int(row[7])
-        img = cv2.imread(test_dir / row[0])
+        img = cv2.imread(os.path.join(path, row[0]))
         x_test.append(img)
         y_test.append(class_id)
 

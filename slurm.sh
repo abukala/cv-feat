@@ -4,6 +4,6 @@
 #SBATCH --ntasks-per-node=24
 #SBATCH --time=24:00:00
 
-module add plgrid/tools/python/3.5.2
+module add plgrid/tools/python/3.6.0
 
 python3 ${1}

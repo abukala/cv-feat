@@ -7,7 +7,7 @@ import databases
 
 parameters = {
     'KNN': {
-        'n_neighbors': 10
+        'n_neighbors': 5
     },
     'LDA': {
         'tol': 0.1

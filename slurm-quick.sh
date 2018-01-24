@@ -4,4 +4,6 @@
 #SBATCH --time=01:00:00
 #SBATCH --output=quick.out
 
-env/bin/python ${1} ${@:2}
+module add plgrid/tools/python/3.6.0
+
+python3 ${1} ${@:2}

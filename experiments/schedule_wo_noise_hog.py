@@ -25,14 +25,32 @@ parameters = {
 feature_params = {
     'gtsrb': {
         'hog': {
-            'pixels_per_cell': (5, 5),
-            'cells_per_block': (6, 6),
+            'pixels_per_cell': (2, 2),
+            'cells_per_block': (4, 4),
             'orientations': 9
         }
     },
-    'mnist': {},
-    'stl10': {},
-    'cifar10': {}
+    'mnist': {
+        'hog': {
+            'pixels_per_cell': (4, 4),
+            'cells_per_block': (3, 3),
+            'orientations': 10
+        }
+    },
+    'stl10': {
+        'hog': {
+            'pixels_per_cell': (6, 6),
+            'cells_per_block': (3, 3),
+            'orientations': 11
+        }
+    },
+    'cifar10': {
+        'hog': {
+            'pixels_per_cell': (4, 4),
+            'cells_per_block': (3, 3),
+            'orientations': 10
+        }
+    }
 }
 
 for dataset in ['gtsrb', 'stl10', 'cifar10', 'mnist']:

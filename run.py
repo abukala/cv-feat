@@ -10,6 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier as KNN
 from sklearn.ensemble import RandomForestClassifier as RFC
 from sklearn.svm import SVC as SVM
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+import numpy as np
 
 import logging
 logger = logging.getLogger('runner')
@@ -58,10 +59,10 @@ def run():
                 noise_level = float(noise_level)
             except ValueError:
                 raise
-            X_test = [noise[noise_type](img, noise_level) for img in X_test]
+            X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])
 
             if train_noise is 'yes':
-                X_train = [noise[noise_type](img, noise_level) for img in X_train]
+                X_train = np.array([noise[noise_type](img, noise_level) for img in X_train])
 
         feature = trial['Feature']
         params = eval(trial['Parameters'])

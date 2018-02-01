@@ -3,6 +3,7 @@ import multiprocessing as mp
 from databases import pull_pending, submit_result
 from datasets import cifar10, stl10, gtsrb, mnist
 from features import get_sift, get_surf, get_hog, normalize_hist, get_pix
+from noise import apply_gaussian_noise, apply_salt_and_pepper_noise, apply_quantization_noise, lower_resolution
 
 from sklearn import metrics
 from sklearn.neighbors import KNeighborsClassifier as KNN
@@ -21,6 +22,13 @@ logger.addHandler(ch)
 
 N_PROCESSES = 24
 
+noise = {
+    'gauss': apply_gaussian_noise,
+    'quantization': apply_quantization_noise,
+    'sp': apply_salt_and_pepper_noise,
+    'lres': lower_resolution
+}
+
 
 def run():
     while True:
@@ -36,9 +44,23 @@ def run():
         assert trial['Dataset'] in ['gtsrb', 'cifar10', 'stl10', 'mnist']
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
+        assert trial['Noise_Type'] in noise.keys() or 'none'
+        assert trial['Train_Noise'] in ['yes', 'no']
 
         ds = eval(trial['Dataset'])
         (X_train, y_train), (X_test, y_test) = ds.load_training_data(), ds.load_test_data()
+
+        noise_type, noise_level, train_noise = trial['Noise_Type'], trial['Noise_Level'], trial['Train_Noise']
+
+        if noise_type is not 'none':
+            try:
+                noise_level = float(noise_level)
+            except ValueError:
+                raise
+            X_test = [noise[noise_type](img, noise_level) for img in X_test]
+
+            if train_noise is 'yes':
+                X_train = [noise[noise_type](img, noise_level) for img in X_train]
 
         feature = trial['Feature']
         params = eval(trial['Parameters'])
@@ -69,10 +91,7 @@ def run():
         predictions = clf.predict(X_test)
         score = metrics.accuracy_score(y_test, predictions)
 
-        logger.info("Finished - dataset: %s - feature: %s - clf: %s - score: %s" % (trial['Dataset'],
-                                                                                     trial['Feature'],
-                                                                                     trial['Classifier'],
-                                                                                     score))
+        logger.info("Finished - dataset: %s - feature: %s - clf: %s noise: (%s, %s) - score: %s" % (trial['Dataset'], trial['Feature'], trial['Classifier'], trial['Noise_Type'], trial['Noise_Level'], score))
 
         submit_result(trial, score)
 

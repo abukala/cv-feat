@@ -88,7 +88,7 @@ def _select(trial=None, database_path=None, connection=None, fetch='one'):
     if trial is not None:
         command += ' %s' % _selector(trial)
 
-    command += ' ORDER BY Dataset, Feature'
+    command += ' ORDER BY Train_Noise, Dataset, Feature, Noise_Type, Noise_Level'
 
     return _execute(command, database_path=database_path, connection=connection, fetch=fetch)
 
@@ -141,7 +141,7 @@ def _connect(database_path, exclusive=False, timeout=600.0):
 
 
 def _columns(score):
-    columns = ['Dataset', 'Classifier', 'Parameters', 'Feature', 'Score']
+    columns = ['Dataset', 'Classifier', 'Parameters', 'Feature', 'Noise_Type', 'Noise_Level', 'Train_Noise', 'Score']
 
     if score:
         return columns

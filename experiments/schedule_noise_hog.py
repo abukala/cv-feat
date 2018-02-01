@@ -74,26 +74,31 @@ noise = {
         'min': 2,
         'max': 9,
         'step': 1
+    },
+    'occlusion': {
+        'min': 0.1,
+        'max': 0.8,
+        'step': 0.1
     }
-
 }
 
 for dataset in ['gtsrb', 'stl10', 'cifar10', 'mnist']:
     for feature in ['none', 'hog']:
         for classifier in ['KNN', 'LDA', 'SVM', 'RFC']:
             for noise_type in noise:
-                nr = noise[noise_type]
-                for num in np.arange(nr['min'], nr['max'], nr['step']):
-                    trial = {
-                        'Dataset': dataset,
-                        'Feature': feature,
-                        'Parameters': {
-                            'clf_params': parameters[classifier],
-                            'feature_params': feature_params[dataset]
-                        },
-                        'Noise_Type': noise_type,
-                        'Noise_Level': num,
-                        'Train_Noise': 'no',
-                        'Classifier': classifier
-                    }
-                    databases.add_to_pending(trial)
+                for train_noise in ['no', 'yes']:
+                    nr = noise[noise_type]
+                    for num in np.arange(nr['min'], nr['max'], nr['step']):
+                        trial = {
+                            'Dataset': dataset,
+                            'Feature': feature,
+                            'Parameters': {
+                                'clf_params': parameters[classifier],
+                                'feature_params': feature_params[dataset]
+                            },
+                            'Noise_Type': noise_type,
+                            'Noise_Level': num,
+                            'Train_Noise': train_noise,
+                            'Classifier': classifier
+                        }
+                        databases.add_to_pending(trial)

@@ -3,7 +3,7 @@ import multiprocessing as mp
 from databases import pull_pending, submit_result
 from datasets import cifar10, stl10, gtsrb, mnist
 from features import get_sift, get_surf, get_hog, normalize_hist, get_pix
-from noise import apply_gaussian_noise, apply_salt_and_pepper_noise, apply_quantization_noise, lower_resolution
+from noise import apply_gaussian_noise, apply_salt_and_pepper_noise, apply_quantization_noise, lower_resolution, apply_occlusion
 
 from sklearn import metrics
 from sklearn.neighbors import KNeighborsClassifier as KNN
@@ -26,7 +26,8 @@ noise = {
     'gauss': apply_gaussian_noise,
     'quantization': apply_quantization_noise,
     'sp': apply_salt_and_pepper_noise,
-    'lres': lower_resolution
+    'lres': lower_resolution,
+    'occlusion': apply_occlusion
 }
 
 

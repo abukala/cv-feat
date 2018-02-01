@@ -2,6 +2,7 @@ import numpy as np
 
 from skimage import color
 from scipy import misc
+import logging
 
 
 def rescale(image, max_value=255):
@@ -75,3 +76,33 @@ def lower_resolution(image, scaling_factor, max_value=255):
         return low_res_image / 255
     else:
         return low_res_image
+
+
+def apply_occlusion(image, fraction):
+    assert 0.0 <= fraction <= 1.0
+
+    image_width, image_height = image.shape[:2]
+    image_area = image_width * image_height
+    occlusion_area = fraction * image_area
+    occlusion_width = int(np.round(np.sqrt(occlusion_area)))
+
+    if occlusion_width > image_width or occlusion_width > image_height:
+        logging.warn('Occlusion larger than the image. Occlusion shape: (%d, %d), image shape: (%d, %d).' %
+                     (occlusion_width, occlusion_width, image_width, image_height))
+
+    occluded_image = image.copy()
+
+    if occlusion_width < image_width:
+        occlusion_start_x = np.random.randint(image_width - occlusion_width)
+    else:
+        occlusion_start_x = 0
+
+    if occlusion_width < image_height:
+        occlusion_start_y = np.random.randint(image_height - occlusion_width)
+    else:
+        occlusion_start_y = 0
+
+    occluded_image[occlusion_start_x:(occlusion_start_x + occlusion_width),
+    occlusion_start_y:(occlusion_start_y + occlusion_width)] = 0
+
+    return occluded_image

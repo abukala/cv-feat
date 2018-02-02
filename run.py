@@ -59,6 +59,8 @@ def run():
                 noise_level = float(noise_level)
             except ValueError:
                 raise
+            if noise_type == 'lres':
+                noise_level = int(noise_level)
             X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])
 
             if train_noise is 'yes':

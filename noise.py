@@ -8,7 +8,7 @@ import logging
 def rescale(image, max_value=255):
     assert max_value in [1.0, 255]
 
-    return np.clip(image, 0, max_value)
+    return np.clip(image, 0, max_value).astype(np.uint8)
 
 
 def apply_gaussian_noise(image, std, mean=0.0, max_value=255):

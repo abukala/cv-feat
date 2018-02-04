@@ -2,17 +2,14 @@ import numpy as np
 import cv2
 from sklearn.cluster import KMeans
 from skimage.feature import hog
+from skimage.color import rgb2gray
 import logging
 logger = logging.getLogger(__name__)
 
 
 def get_hog(X, pixels_per_cell=(2, 2), cells_per_block=(1, 1), orientations=10, block_norm='L1-sqrt'):
     if len(X.shape) > 3:
-        try:
-            X = [cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) for img in X]
-        except Exception:
-            np.save('bad_data.npy', X)
-            raise
+        X = [rgb2gray(img) for img in X]
     X = [hog(img, orientations=orientations, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block,
                    block_norm=block_norm) for img in X]
 

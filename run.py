@@ -56,7 +56,7 @@ def run():
 
         if noise_type is not 'none':
             try:
-                noise_level = float(noise_level)
+                noise_level = eval(noise_level)
             except ValueError:
                 raise
             if noise_type == 'lres':

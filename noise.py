@@ -51,9 +51,6 @@ def lower_resolution(image, scaling_factor, max_value=255):
 
     width = image.shape[0]
     height = image.shape[1]
-    width = width - width % scaling_factor
-    height = height - height % scaling_factor
-    image = image[:width, :height]
 
     if len(image.shape) == 3:
         image_ycbcr = color.rgb2ycbcr(image)
@@ -62,7 +59,7 @@ def lower_resolution(image, scaling_factor, max_value=255):
         image_y = image.copy()
 
     downscaled = misc.imresize(image_y, 1 / float(scaling_factor), 'bicubic', mode='L')
-    rescaled = misc.imresize(downscaled, float(scaling_factor), 'bicubic', mode='L').astype(np.float32)
+    rescaled = misc.imresize(downscaled, (width, height), 'bicubic', mode='L').astype(np.float32)
 
     if len(image.shape) == 3:
         low_res_image = image_ycbcr

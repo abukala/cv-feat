@@ -30,19 +30,19 @@ def visualize(feature, noise_type, file_name=None):
                     assert len(selection) == 1
 
                     for training_noise in ['yes', 'no']:
-                        rows.append([dataset, noise_level, selection.iloc[0]['Score'], training_noise])
+                        rows.append([dataset, classifier, noise_level, selection.iloc[0]['Score'], training_noise])
                 else:
                     for training_noise in ['yes', 'no']:
                         subselection = selection[selection['Train_Noise'] == training_noise]
 
                         assert len(subselection) == 1
 
-                        rows.append([dataset, classifier, noise_level, subselection.iloc[0]['Score'], training_noise]) # dodano classifier
+                        rows.append([dataset, classifier, noise_level, subselection.iloc[0]['Score'], training_noise])
 
-    df = pd.DataFrame(rows, columns=['dataset', 'classifier', 'noise level', 'accuracy', 'training noise']) # dodano 'classifier'
+    df = pd.DataFrame(rows, columns=['dataset', 'classifier', 'noise level', 'accuracy', 'training noise'])
 
-    grid = sns.FacetGrid(df, row='classifier', col='dataset', col_wrap=len(DATASETS), hue='training noise', legend_out=True) # dodano row='classifier'
-    noise_levels = [round(level, 2) for level in noise_levels]
+    grid = sns.FacetGrid(df, row='classifier', col='dataset', hue='training noise', legend_out=True)
+    noise_levels = [str(round(float(level), 2)) for level in noise_levels]
     grid.set(ylim=(0.0, 1.0), xticks=range(len(noise_levels)))
     grid.set_xticklabels(noise_levels, rotation=90)
     grid.map(plt.plot, 'accuracy')

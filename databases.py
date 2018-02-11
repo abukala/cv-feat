@@ -14,7 +14,7 @@ FINISHED_PATH = RESULTS_PATH / 'finished.db'
 def add_to_pending(trial, check_presence=True):
     if check_presence:
         for database_path in [PENDING_PATH, ACTIVE_PATH, FINISHED_PATH]:
-            if _select(trial, database_path=database_path) is not None:
+            if select(trial, database_path=database_path) is not None:
                 return False
 
     _insert(trial, database_path=PENDING_PATH)
@@ -24,7 +24,7 @@ def add_to_pending(trial, check_presence=True):
 
 def pull_pending():
     connection = _connect(database_path=PENDING_PATH, exclusive=True)
-    trial = _select(connection=connection, fetch='one')
+    trial = select(connection=connection, fetch='one')
 
     if trial is not None:
         _insert(trial, database_path=ACTIVE_PATH)
@@ -45,7 +45,7 @@ def submit_result(trial, score):
 
 
 def clear_active():
-    trials = _select(database_path=ACTIVE_PATH, fetch='all')
+    trials = select(database_path=ACTIVE_PATH, fetch='all')
 
     for trial in trials:
         _delete(trial, ACTIVE_PATH)
@@ -58,7 +58,7 @@ def export(path=None, database_path=FINISHED_PATH):
         filename = 'results_%s.csv' % timestamp
         path = RESULTS_PATH / filename
 
-    trials = _select(database_path=database_path, fetch='all')
+    trials = select(database_path=database_path, fetch='all')
     df = pd.DataFrame(trials, columns=_columns(score=(database_path == FINISHED_PATH)))
     df.to_csv(path, index=False)
 
@@ -80,7 +80,7 @@ def initialize():
             _execute('CREATE TABLE Trials (%s)' % columns, database_path=path)
 
 
-def _select(trial=None, database_path=None, connection=None, fetch='one'):
+def select(trial=None, database_path=None, connection=None, fetch='one'):
     assert fetch in ['one', 'all']
 
     command = 'SELECT * FROM Trials'

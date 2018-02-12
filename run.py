@@ -56,7 +56,11 @@ def run():
 
         if noise_type is not 'none':
             assert isinstance(noise_level, str)
-            noise_level = eval(noise_level)
+            try:
+                noise_level = eval(noise_level)
+            except Exception:
+                print(noise_level, noise_type)
+                raise
             if noise_type == 'lres':
                 noise_level = int(noise_level)
             X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])

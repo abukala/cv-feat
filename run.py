@@ -54,7 +54,7 @@ def run():
 
         noise_type, noise_level, train_noise = trial['Noise_Type'], trial['Noise_Level'], trial['Train_Noise']
 
-        if noise_type is not 'none':
+        if noise_level is not 'none':
             assert isinstance(noise_level, str)
             try:
                 noise_level = eval(noise_level)

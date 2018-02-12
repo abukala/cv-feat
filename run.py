@@ -55,10 +55,8 @@ def run():
         noise_type, noise_level, train_noise = trial['Noise_Type'], trial['Noise_Level'], trial['Train_Noise']
 
         if noise_type is not 'none':
-            try:
-                noise_level = eval(noise_level)
-            except ValueError:
-                raise
+            assert isinstance(noise_level, str)
+            noise_level = eval(noise_level)
             if noise_type == 'lres':
                 noise_level = int(noise_level)
             X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])

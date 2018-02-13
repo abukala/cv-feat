@@ -54,7 +54,7 @@ def run():
 
         noise_type, noise_level, train_noise = trial['Noise_Type'], trial['Noise_Level'], trial['Train_Noise']
 
-        pre_size = X_test[0].size()
+        pre_size = X_test[0].shape
         pre_dtype = X_test[0].dtype
 
         assert isinstance(noise_level, str)
@@ -66,7 +66,7 @@ def run():
         if train_noise == 'yes':
             X_train = np.array([noise[noise_type](img, noise_level) for img in X_train])
 
-        assert X_test[0].size() == pre_size
+        assert X_test[0].shape == pre_size
         assert X_test[0].dtype == pre_dtype
 
         feature = trial['Feature']

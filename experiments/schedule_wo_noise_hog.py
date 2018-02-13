@@ -56,16 +56,21 @@ feature_params = {
 for dataset in ['gtsrb', 'stl10', 'cifar10', 'mnist']:
     for feature in ['none', 'hog']:
         for classifier in ['KNN', 'LDA', 'SVM', 'RFC']:
-            trial = {
-                'Dataset': dataset,
-                'Feature': feature,
-                'Parameters': {
-                    'clf_params': parameters[classifier],
-                    'feature_params': feature_params[dataset]
-                },
-                'Noise_Type': 'none',
-                'Noise_Level': 'none',
-                'Train_Noise': 'no',
-                'Classifier': classifier
-            }
-            databases.add_to_pending(trial)
+            for noise_type in ['gauss', 'sp', 'quantization', 'lres', 'occlusion']:
+                for train_noise in ['yes', 'no']:
+                    noise_level = 0
+                    if noise_type == 'lres':
+                        noise_level = 1
+                    trial = {
+                        'Dataset': dataset,
+                        'Feature': feature,
+                        'Parameters': {
+                            'clf_params': parameters[classifier],
+                            'feature_params': feature_params[dataset]
+                        },
+                        'Noise_Type': noise_type,
+                        'Noise_Level': noise_level,
+                        'Train_Noise': train_noise,
+                        'Classifier': classifier
+                    }
+                    databases.add_to_pending(trial)

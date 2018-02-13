@@ -16,7 +16,6 @@ def visualize(feature, noise_type, file_name=None):
         'Feature': feature,
         'Noise_Type': noise_type
     }, fetch='all', database_path=databases.FINISHED_PATH))
-
     trials.loc[trials['Noise_Level'] == 'none', 'Noise_Level'] = 0
     noise_levels = trials['Noise_Level'].unique()
     rows = []

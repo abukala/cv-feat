@@ -54,19 +54,20 @@ def run():
 
         noise_type, noise_level, train_noise = trial['Noise_Type'], trial['Noise_Level'], trial['Train_Noise']
 
-        if noise_level != 'none':
-            assert isinstance(noise_level, str)
-            try:
-                noise_level = eval(noise_level)
-            except Exception:
-                print(noise_level, noise_type)
-                raise
-            if noise_type == 'lres':
-                noise_level = int(noise_level)
-            X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])
+        pre_size = X_test[0].size()
+        pre_dtype = X_test[0].dtype
 
-            if train_noise == 'yes':
-                X_train = np.array([noise[noise_type](img, noise_level) for img in X_train])
+        assert isinstance(noise_level, str)
+        noise_level = eval(noise_level)
+        if noise_type == 'lres':
+            noise_level = int(noise_level)
+        X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])
+
+        if train_noise == 'yes':
+            X_train = np.array([noise[noise_type](img, noise_level) for img in X_train])
+
+        assert X_test[0].size() == pre_size
+        assert X_test[0].dtype == pre_dtype
 
         feature = trial['Feature']
         params = eval(trial['Parameters'])

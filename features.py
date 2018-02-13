@@ -21,7 +21,7 @@ def get_surf(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
     descriptors = []
     for image in X:
         _, des = surf.detectAndCompute(image, None)
-        if des is not None:
+        if des:
             descriptors.append(des)
         else:
             descriptors.append([])
@@ -65,7 +65,7 @@ def get_sift(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
     descriptors = []
     for image in X:
         _, des = sift.detectAndCompute(image, None)
-        if des is not None:
+        if des:
             descriptors.append(des)
         else:
             descriptors.append([])

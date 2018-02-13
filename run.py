@@ -65,7 +65,7 @@ def run():
                 noise_level = int(noise_level)
             X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])
 
-            if train_noise is 'yes':
+            if train_noise == 'yes':
                 X_train = np.array([noise[noise_type](img, noise_level) for img in X_train])
 
         feature = trial['Feature']

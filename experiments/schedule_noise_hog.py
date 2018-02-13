@@ -56,27 +56,27 @@ feature_params = {
 
 noise = {
     'gauss': {
-        'min': 0.05,
+        'min': 0,
         'max': 0.5,
         'step': 0.05
     },
     'quantization': {
-        'min': 0.1,
+        'min': 0,
         'max': 1,
         'step': 0.1
     },
     'sp': {
-        'min': 0.025,
+        'min': 0,
         'max': 0.25,
         'step': 0.025
     },
     'lres': {
-        'min': 2,
+        'min': 1,
         'max': 9,
         'step': 1
     },
     'occlusion': {
-        'min': 0.1,
+        'min': 0,
         'max': 0.8,
         'step': 0.1
     }

@@ -72,7 +72,7 @@ noise = {
     },
     'lres': {
         'min': 1,
-        'max': 9,
+        'max': 8,
         'step': 1
     },
     'occlusion': {
@@ -88,7 +88,7 @@ for dataset in ['gtsrb', 'stl10', 'cifar10', 'mnist']:
             for noise_type in noise:
                 for train_noise in ['no', 'yes']:
                     nr = noise[noise_type]
-                    for num in np.arange(nr['min'], nr['max'], nr['step']):
+                    for num in np.arange(nr['min'], nr['max']+nr['step'], nr['step']):
                         trial = {
                             'Dataset': dataset,
                             'Feature': feature,

@@ -26,30 +26,26 @@ parameters = {
 feature_params = {
     'gtsrb': {
         'hog': {
-            'pixels_per_cell': (2, 2),
+            'pixels_per_cell': (4, 4),
             'cells_per_block': (4, 4),
-            'orientations': 9
         }
     },
     'mnist': {
         'hog': {
             'pixels_per_cell': (4, 4),
             'cells_per_block': (3, 3),
-            'orientations': 10
         }
     },
     'stl10': {
         'hog': {
             'pixels_per_cell': (6, 6),
-            'cells_per_block': (3, 3),
-            'orientations': 11
+            'cells_per_block': (2, 2),
         }
     },
     'cifar10': {
         'hog': {
-            'pixels_per_cell': (4, 4),
-            'cells_per_block': (3, 3),
-            'orientations': 10
+            'pixels_per_cell': (6, 6),
+            'cells_per_block': (2, 2),
         }
     }
 }

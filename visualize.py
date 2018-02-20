@@ -5,6 +5,7 @@ import seaborn as sns
 import databases
 import os
 
+sns.set_style('whitegrid')
 
 DATASETS = ['gtsrb', 'stl10', 'cifar10', 'mnist']
 CLASSIFIERS = ['KNN', 'LDA', 'SVM', 'RFC']
@@ -37,6 +38,8 @@ def visualize(feature, noise_type, file_name=None):
     grid.set(ylim=(0.0, 1.0), xticks=range(len(noise_levels)))
     grid.set_xticklabels(noise_levels, rotation=90)
     grid.map(plt.plot, 'accuracy')
+    grid.fig.legend(loc='lower center', ncol=3, labels=['distortion on both sets', 'distortion on test set only'])
+    grid.fig.subplots_adjust(bottom=0.10)
     grid.set_xlabels('noise level')
     grid.set_ylabels('accuracy')
 

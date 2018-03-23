@@ -52,13 +52,13 @@ def clear_active():
         _insert(trial, PENDING_PATH)
 
 
-def export(path=None, database_path=FINISHED_PATH):
+def export(path=None, description=None, database_path=FINISHED_PATH):
     if path is None:
         timestamp = '{:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
         filename = 'results_%s.csv' % timestamp
         path = RESULTS_PATH / filename
 
-    trials = select(database_path=database_path, fetch='all')
+    trials = select(database_path=database_path, description=description, fetch='all')
     df = pd.DataFrame(trials, columns=_columns(score=(database_path == FINISHED_PATH)))
     df.to_csv(path, index=False)
 
@@ -80,15 +80,18 @@ def initialize():
             _execute('CREATE TABLE Trials (%s)' % columns, database_path=path)
 
 
-def select(trial=None, database_path=None, connection=None, fetch='one'):
+def select(trial=None, description=None, database_path=None, connection=None, fetch='one'):
     assert fetch in ['one', 'all']
 
     command = 'SELECT * FROM Trials'
 
+    if description is not None:
+        command += ' WHERE Description=%s' % description
+
     if trial is not None:
         command += ' %s' % _selector(trial)
 
-    command += ' ORDER BY Train_Noise, Dataset, Feature, Noise_Type, Noise_Level'
+    command += ' ORDER BY Description, Train_Noise, Dataset, Feature, Noise_Type, Noise_Level'
 
     return _execute(command, database_path=database_path, connection=connection, fetch=fetch)
 
@@ -141,7 +144,7 @@ def _connect(database_path, exclusive=False, timeout=600.0):
 
 
 def _columns(score):
-    columns = ['Dataset', 'Classifier', 'Parameters', 'Feature', 'Noise_Type', 'Noise_Level', 'Train_Noise', 'Score']
+    columns = ['Dataset', 'Classifier', 'Parameters', 'Feature', 'Noise_Type', 'Noise_Level', 'Train_Noise', 'Score', 'Description']
 
     if score:
         return columns
@@ -186,11 +189,18 @@ if __name__ == '__main__':
             print('Clearing active tasks...')
             clear_active()
         elif sys.argv[1] == 'export':
-            filename = sys.argv[2]
-            if not filename.endswith('.csv'):
-                filename += '.csv'
+            try:
+                filename = sys.argv[2]
+                if not filename.endswith('.csv'):
+                    filename += '.csv'
+            except IndexError:
+                filename = None
+            try:
+                description = sys.argv[3]
+            except IndexError:
+                description = None
             path = RESULTS_PATH / filename
-            export(path=path)
+            export(path=path, description=description)
 
     else:
         if databases_exist:

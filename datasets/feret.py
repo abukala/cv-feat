@@ -22,8 +22,8 @@ def _load_batch(path, subset=None):
 def load_data(subset=None, train_ratio=0.6):
     img, cls = _load_batch(FIRST_BATCH, subset)
     img2, cls2 = _load_batch(SECOND_BATCH, subset)
-    img.extend(img2)
-    cls.extend(cls2)
+    img = np.append(img, img2)
+    cls = np.append(cls, cls2)
     assert len(img) == len(cls)
     choices = np.arange(len(img))
     split = int(len(choices)*train_ratio)

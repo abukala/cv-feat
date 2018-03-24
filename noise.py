@@ -1,6 +1,7 @@
 import numpy as np
 
 from skimage import color
+from skimage.filters import gaussian
 from scipy import misc
 import logging
 
@@ -18,6 +19,10 @@ def apply_gaussian_noise(image, std, mean=0.0, max_value=255):
     noisy = rescale(noisy, max_value)
 
     return noisy
+
+
+def apply_gaussian_blur(image, sigma):
+    return gaussian(image, sigma=sigma)
 
 
 def apply_salt_and_pepper_noise(image, p, max_value=255):

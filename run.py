@@ -3,7 +3,7 @@ import multiprocessing as mp
 from databases import pull_pending, submit_result
 from datasets import cifar10, stl10, gtsrb, mnist, feret
 from features import get_sift, get_surf, get_hog, normalize_hist, get_pix
-from noise import apply_gaussian_noise, apply_salt_and_pepper_noise, apply_quantization_noise, lower_resolution, apply_occlusion
+from noise import apply_gaussian_noise, apply_salt_and_pepper_noise, apply_quantization_noise, lower_resolution, apply_occlusion, apply_gaussian_blur
 
 from sklearn import metrics
 from sklearn.neighbors import KNeighborsClassifier as KNN
@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestClassifier as RFC
 from sklearn.svm import SVC as SVM
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import numpy as np
+from skimage.filters import gaussian
 
 import logging
 logger = logging.getLogger('runner')
@@ -28,7 +29,8 @@ noise = {
     'quantization': apply_quantization_noise,
     'sp': apply_salt_and_pepper_noise,
     'lres': lower_resolution,
-    'occlusion': apply_occlusion
+    'occlusion': apply_occlusion,
+    'blur': apply_gaussian_blur
 }
 
 

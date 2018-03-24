@@ -16,7 +16,7 @@ def _load_batch(path, subset=None):
                 continue
         img.append(imread(bz2.BZ2File(file.open(mode='rb'))))
         cls.append(int(file.name[:5]))
-    return img, cls
+    return np.array(img), np.array(cls)
 
 
 def load_data(subset=None, train_ratio=0.6):

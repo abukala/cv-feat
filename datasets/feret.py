@@ -29,6 +29,7 @@ def load_data(subset=None, train_ratio=0.6):
     split = int(len(choices)*train_ratio)
     np.random.shuffle(choices)
     img = np.array(img)
+    cls = np.array(cls)
     X_train, y_train = img[choices[:split]], cls[choices[:split]]
     X_test, y_test = img[choices[split:]], cls[choices[split:]]
 

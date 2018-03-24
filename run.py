@@ -43,7 +43,7 @@ def run():
                                                                          trial['Feature'],
                                                                          trial['Classifier']))
 
-        assert trial['Dataset'] in ['gtsrb', 'cifar10', 'stl10', 'mnist']
+        assert trial['Dataset'] in ['gtsrb', 'cifar10', 'stl10', 'mnist', 'feret60', 'feret70', 'feret80']
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
         assert trial['Noise_Type'] in noise.keys() or 'none'

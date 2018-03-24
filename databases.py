@@ -144,7 +144,7 @@ def _connect(database_path, exclusive=False, timeout=600.0):
 
 
 def _columns(score):
-    columns = ['Dataset', 'Classifier', 'Parameters', 'Feature', 'Noise_Type', 'Noise_Level', 'Train_Noise', 'Score', 'Description']
+    columns = ['Dataset', 'Classifier', 'Parameters', 'Feature', 'Noise_Type', 'Noise_Level', 'Train_Noise', 'Description', 'Score']
 
     if score:
         return columns

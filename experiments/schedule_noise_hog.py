@@ -1,6 +1,7 @@
 import sys
 import os
 import numpy as np
+from ..datasets.feret import params as feret_ft_params
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -42,12 +43,7 @@ feature_params = {
             'cells_per_block': (2, 2),
         }
     },
-    'cifar10': {
-        'hog': {
-            'pixels_per_cell': (6, 6),
-            'cells_per_block': (2, 2),
-        }
-    }
+    'feret': feret_ft_params
 }
 
 noise = {
@@ -66,10 +62,10 @@ noise = {
         'max': 0.25,
         'step': 0.025
     },
-    'lres': {
-        'min': 1,
-        'max': 8,
-        'step': 1
+    'blur': {
+        'min': 0,
+        'max': 5,
+        'step': 0.5
     },
     'occlusion': {
         'min': 0,
@@ -78,7 +74,7 @@ noise = {
     }
 }
 
-for dataset in ['gtsrb', 'stl10', 'cifar10', 'mnist']:
+for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
     for feature in ['none', 'hog']:
         for classifier in ['KNN', 'LDA', 'SVM', 'RFC']:
             for noise_type in noise:

@@ -6,6 +6,13 @@ import numpy as np
 FIRST_BATCH = DATA_PATH / 'colorferet' / 'dvd2' / 'gray_feret_cd1' / 'data' / 'images'
 SECOND_BATCH = DATA_PATH / 'colorferet' / 'dvd2' / 'gray_feret_cd2' / 'data' / 'images'
 
+params = {
+    'hog': {
+        'pixels_per_cell': (24, 24),
+        'cells_per_block': (1, 1)
+    }
+}
+
 
 def _load_batch(path, subset=None):
     img = []
@@ -19,7 +26,7 @@ def _load_batch(path, subset=None):
     return img, cls
 
 
-def load_data(subset=None, train_ratio=0.6):
+def load_data(subset=None, train_ratio=0.7):
     img, cls = _load_batch(FIRST_BATCH, subset)
     img2, cls2 = _load_batch(SECOND_BATCH, subset)
     img.extend(img2)

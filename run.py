@@ -45,15 +45,14 @@ def run():
                                                                          trial['Feature'],
                                                                          trial['Classifier']))
 
-        assert trial['Dataset'] in ['gtsrb', 'cifar10', 'stl10', 'mnist', 'feret60', 'feret70', 'feret80']
+        assert trial['Dataset'] in ['gtsrb', 'cifar10', 'stl10', 'mnist', 'feret']
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
         assert trial['Noise_Type'] in noise.keys() or 'none'
         assert trial['Train_Noise'] in ['yes', 'no']
 
         if trial['Dataset'].startswith('feret'):
-            ratio = eval(trial['Dataset'][-2:])/100
-            (X_train, y_train), (X_test, y_test) = feret.load_data(train_ratio=ratio)
+            (X_train, y_train), (X_test, y_test) = feret.load_data()
         else:
             ds = eval(trial['Dataset'])
             (X_train, y_train), (X_test, y_test) = ds.load_training_data(), ds.load_test_data()

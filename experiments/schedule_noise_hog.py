@@ -91,6 +91,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                             'Noise_Type': noise_type,
                             'Noise_Level': num,
                             'Train_Noise': train_noise,
-                            'Classifier': classifier
+                            'Classifier': classifier,
+                            'Description': 'full_noise_hog'
                         }
                         databases.add_to_pending(trial)

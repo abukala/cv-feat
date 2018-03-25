@@ -1,7 +1,6 @@
 import sys
 import os
 import numpy as np
-from ..datasets.feret import params as feret_ft_params
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -43,7 +42,12 @@ feature_params = {
             'cells_per_block': (2, 2),
         }
     },
-    'feret': feret_ft_params
+    'feret': {
+        'hog': {
+            'pixels_per_cell': (24, 24),
+            'cells_per_block': (1, 1)
+        }
+    }
 }
 
 noise = {

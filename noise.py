@@ -1,6 +1,6 @@
 import numpy as np
 
-from skimage import color
+from skimage import color, img_as_ubyte
 from skimage.filters import gaussian
 from scipy import misc
 import logging
@@ -22,7 +22,7 @@ def apply_gaussian_noise(image, std, mean=0.0, max_value=255):
 
 
 def apply_gaussian_blur(image, sigma):
-    return gaussian(image, sigma=sigma).astype(np.uint8)
+    return img_as_ubyte(gaussian(image, sigma=sigma))
 
 
 def apply_salt_and_pepper_noise(image, p, max_value=255):

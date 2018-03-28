@@ -51,8 +51,11 @@ def run():
         assert trial['Noise_Type'] in noise.keys() or 'none'
         assert trial['Train_Noise'] in ['yes', 'no']
 
+        scale = False
+
         if trial['Dataset'].startswith('feret'):
             (X_train, y_train), (X_test, y_test) = feret.load_data()
+            scale = 0.25
         else:
             ds = eval(trial['Dataset'])
             (X_train, y_train), (X_test, y_test) = ds.load_training_data(), ds.load_test_data()
@@ -94,8 +97,8 @@ def run():
             X_train = get_hog(X_train, **feature_params)
             X_test = get_hog(X_test, **feature_params)
         elif feature == 'none':
-            X_train = get_pix(X_train)
-            X_test = get_pix(X_test)
+            X_train = get_pix(X_train, scale=scale)
+            X_test = get_pix(X_test, scale=scale)
 
         clf_params = params['clf_params']
         clf = eval(trial['Classifier'])(**clf_params)

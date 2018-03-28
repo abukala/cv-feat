@@ -3,6 +3,7 @@ import cv2
 from sklearn.cluster import KMeans
 from skimage.feature import hog
 from skimage.color import rgb2gray
+from skimage.transform import rescale
 import logging
 logger = logging.getLogger(__name__)
 
@@ -75,9 +76,12 @@ def get_sift(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
     return hist, kmeans
 
 
-def get_pix(X):
-    # Normalize images
+def get_pix(X, scale=False):
     assert X.dtype == np.dtype('uint8') and X[0][..., 0].min() >= 0 and X[0][..., 0].max() <= 255
+    # Rescale images
+    if scale:
+        X = [rescale(img, scale) for img in X]
+    # Normalize images
     X = [img/255 for img in X]
     # Flatten data
     X = [x.flatten() for x in X]

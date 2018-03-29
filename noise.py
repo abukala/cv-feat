@@ -22,7 +22,7 @@ def apply_gaussian_noise(image, std, mean=0.0, max_value=255):
 
 
 def apply_gaussian_blur(image, sigma):
-    return img_as_ubyte(gaussian(image, sigma=sigma))
+    return img_as_ubyte(np.clip(gaussian(image, sigma=sigma), a_min=0, a_max=1))
 
 
 def apply_salt_and_pepper_noise(image, p, max_value=255):

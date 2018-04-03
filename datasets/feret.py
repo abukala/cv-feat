@@ -34,6 +34,7 @@ def load_data(subset=None, train_ratio=0.7):
     assert len(img) == len(cls)
     choices = np.arange(len(img))
     split = int(len(choices)*train_ratio)
+    np.random.seed(0)
     np.random.shuffle(choices)
     img = np.array(img)
     cls = np.array(cls)

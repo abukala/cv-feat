@@ -7,7 +7,7 @@ import os
 
 sns.set_style('whitegrid')
 
-DATASETS = ['gtsrb', 'stl10', 'cifar10', 'mnist']
+DATASETS = ['gtsrb', 'stl10', 'feret', 'mnist']
 CLASSIFIERS = ['KNN', 'LDA', 'SVM', 'RFC']
 VISUALIZATIONS_PATH = os.path.join(os.path.dirname(__file__), 'visualizations')
 
@@ -54,5 +54,5 @@ def visualize(feature, noise_type, file_name=None):
 
 if __name__ == '__main__':
     for feature in ['none', 'hog']:
-        for noise_type in ['gauss', 'sp', 'quantization', 'lres', 'occlusion']:
+        for noise_type in ['gauss', 'sp', 'quantization', 'blur', 'occlusion']:
             visualize(feature, noise_type, '%s_%s.pdf' % (feature, noise_type))

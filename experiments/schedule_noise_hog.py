@@ -53,18 +53,18 @@ feature_params = {
 noise = {
     'gauss': {
         'min': 0,
-        'max': 0.5,
-        'step': 0.05
+        'max': 0.25,
+        'step': 0.025
     },
     'quantization': {
         'min': 0,
-        'max': 1,
-        'step': 0.1
+        'max': 0.5,
+        'step': 0.05
     },
     'sp': {
         'min': 0,
-        'max': 0.25,
-        'step': 0.025
+        'max': 0.2,
+        'step': 0.02
     },
     'blur': {
         'min': 0,

@@ -4,6 +4,7 @@ from .common import DATA_PATH
 stl10_path = DATA_PATH / 'stl10_binary'
 download_url = "http://ai.stanford.edu/~acoates/stl10/stl10_binary.tar.gz"
 
+# Img size = (96, 96, 3)
 
 def _load_images(url):
     with url.open(mode='rb') as f:

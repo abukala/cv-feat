@@ -14,6 +14,7 @@ download_url = [
     "http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz"
 ]
 
+# Img size = (28, 28)
 
 def _load_images(url):
     file = gzip.open(url.open(mode='rb'))

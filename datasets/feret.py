@@ -13,6 +13,7 @@ params = {
     }
 }
 
+# Img shape = (256, 384)
 
 def _load_batch(path, subset=None):
     img = []
@@ -42,3 +43,13 @@ def load_data(subset=None, train_ratio=0.7):
     X_test, y_test = img[choices[split:]], cls[choices[split:]]
 
     return (X_train, y_train), (X_test, y_test)
+
+
+def load_training_data():
+    (X, y), (_, _) = load_data()
+    return X, y
+
+
+def load_test_data():
+    (_, _), (X, y) = load_data()
+    return X, y

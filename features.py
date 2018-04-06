@@ -8,11 +8,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_hog(X, pixels_per_cell=(2, 2), cells_per_block=(1, 1), orientations=10, block_norm='L1-sqrt'):
+def get_hog(X, pixels_per_cell=(8, 8), cells_per_block=(3, 3)):
     if len(X.shape) > 3:
         X = [rgb2gray(img) for img in X]
-    X = [hog(img, orientations=orientations, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block,
-                   block_norm=block_norm) for img in X]
+    X = [hog(img, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block) for img in X]
 
     return X
 

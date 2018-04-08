@@ -29,41 +29,41 @@ clf_params = {
         'C': [0.001, 0.1, 1, 10, 100]
     },
     'RFC': {
-        'n_estimators': [10, 50, 100, 200, 500, 1000],
-        'max_depth': [1, 5, 10, 25, 50],
-        'min_samples_leaf': [1, 2, 4, 6, 8, 10]
+        'n_estimators': [5, 10, 25, 50, 100],
     },
     'LDA': {
         'n_components': [1, 2, 4, 6, 8]
     },
     'KNN': {
-        'n_neighbors': [1, 5, 10, 25, 50, 100]
+        'n_neighbors': [1, 5, 10, 25, 50]
     }
 }
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 2
+    assert len(sys.argv) == 4
     assert sys.argv[1] in ['stl10', 'gtsrb', 'mnist', 'feret']
     dataset = eval(sys.argv[1])
+    cells_per_block = (int(sys.argv[2], int(sys.argv[2])))
+    clf_label = sys.argv[3]
     X, y = dataset.load_training_data()
     results = []
 
-    for cells_per_block in [(1, 1), (2, 2), (3, 3)]:
-        for pixels_per_cell in reversed(hog_params[sys.argv[1]]['pixels_per_cell']):
-            ts = time.time()
-            des = get_hog(X, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block)
-            for clf_label in clf_params:
-                estimator = eval(clf_label)()
-                clf = GridSearchCV(estimator=estimator, param_grid=clf_params[clf_label], cv=10, n_jobs=24)
-                clf.fit(des, y)
-                results.append({
-                    "pixels_per_cell": pixels_per_cell,
-                    "cells_per_block": cells_per_block,
-                    "clf": clf_label,
-                    "clf_params": clf.best_params_,
-                    "score": clf.best_score_
-                })
-                with open('%s.json' % sys.argv[1], 'w') as outfile:
-                    json.dump(results, outfile)
-            job_time = round((time.time() - ts)/60, 1)
-            print("cells_per_block: %s, pixels_per_cell: %s finished in %s minutes" % (cells_per_block, pixels_per_cell, job_time))
+    for pixels_per_cell in reversed(hog_params[sys.argv[1]]['pixels_per_cell']):
+        ts = time.time()
+        des = get_hog(X, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block)
+        estimator = eval(clf_label)()
+        clf = GridSearchCV(estimator=estimator, param_grid=clf_params[clf_label], cv=5, n_jobs=5)
+        clf.fit(des, y)
+        job_time = round((time.time() - ts) / 60, 1)
+        results.append({
+            "pixels_per_cell": pixels_per_cell,
+            "cells_per_block": cells_per_block,
+            "clf": clf_label,
+            "clf_params": clf.best_params_,
+            "score": clf.best_score_,
+            "job_time": job_time
+        })
+    with open('%s.json' % sys.argv[1], 'a') as outfile:
+        for result in results:
+            json.dump(results, outfile)
+            outfile.write("\n")

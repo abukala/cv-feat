@@ -65,5 +65,5 @@ if __name__ == '__main__':
         })
     with open('%s.json' % sys.argv[1], 'a') as outfile:
         for result in results:
-            json.dump(results, outfile)
+            json.dump(result, outfile)
             outfile.write("\n")

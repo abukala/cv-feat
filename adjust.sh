@@ -6,7 +6,7 @@ do
     do
         for cls in "KNN" "SVM" "RFC" "LDA"
         do
-            sbatch slurm-adjust.sh denoise.py $dataset $cells_per_block $cls
+            sbatch slurm-adjust.sh adjust.py $dataset $cells_per_block $cls
         done
     done
 done

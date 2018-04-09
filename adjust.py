@@ -43,7 +43,7 @@ if __name__ == '__main__':
     assert len(sys.argv) == 4
     assert sys.argv[1] in ['stl10', 'gtsrb', 'mnist', 'feret']
     dataset = eval(sys.argv[1])
-    cells_per_block = (int(sys.argv[2], int(sys.argv[2])))
+    cells_per_block = (int(sys.argv[2]), int(sys.argv[2]))
     clf_label = sys.argv[3]
     X, y = dataset.load_training_data()
     results = []

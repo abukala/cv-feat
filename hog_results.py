@@ -1,6 +1,7 @@
 import sys
 import json
 import hog
+from operator import itemgetter
 
 
 if __name__ == '__main__':
@@ -19,17 +20,17 @@ if __name__ == '__main__':
     with filepath.open(mode='r') as f:
         data = [json.loads(line) for line in f.readlines()]
 
-    top_score = 0
-    top_trial = None
+    data = sorted(data, key=itemgetter('score'))
 
     for trial in data:
         check[(trial['clf'], trial['cells_per_block'][0], trial['pixels_per_cell'][0])] = True
-        if trial['score'] > top_score:
-            top_score = trial['score']
-            top_trial = trial
 
     for key in check:
         if not check[key]:
             print('Trial missing: %s, cells_per_block: %s, pixels_per_cell: %s' % key)
 
-    print('Top trial: %s' % top_trial)
+    print("----------BEST TRIALS----------")
+
+    for trial in data[-10:]:
+        print(trial)
+

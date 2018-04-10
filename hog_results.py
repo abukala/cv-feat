@@ -19,7 +19,7 @@ if __name__ == '__main__':
     for clf in ['KNN', 'SVM', 'RFC', 'LDA']:
         for cells_per_block in range(1,4):
             for pixels_per_cell in hog.hog_params[sys.argv[1]]['pixels_per_cell']:
-                check[(clf, cells_per_block, pixels_per_cell)] = False
+                check[(clf, str((cells_per_block, cells_per_block)), str(pixels_per_cell))] = False
 
     for trial in data:
         check[(trial['clf'], str(trial['cells_per_block']), str(trial['pixels_per_cell']))] = True

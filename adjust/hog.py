@@ -8,6 +8,9 @@ from features import get_hog
 import sys
 import json
 import time
+import pathlib
+
+RESULTS_DIR = pathlib.Path() / 'results'
 
 hog_params = {
     'stl10': {
@@ -63,7 +66,12 @@ if __name__ == '__main__':
             "score": clf.best_score_,
             "job_time": job_time
         })
-    with open('%s.json' % sys.argv[1], 'a') as outfile:
+
+    if not RESULTS_DIR.exists():
+        RESULTS_DIR.mkdir()
+    filename = '%s.json' % sys.argv[1]
+    filepath = RESULTS_DIR / filename
+    with filepath.open(mode='a') as outfile:
         for result in results:
             json.dump(result, outfile)
             outfile.write("\n")

@@ -22,7 +22,7 @@ if __name__ == '__main__':
                 check[(clf, cells_per_block, pixels_per_cell)] = False
 
     for trial in data:
-        check[(trial['clf'], trial['cells_per_block'], trial['pixels_per_cell'])] = True
+        check[(trial['clf'], str(trial['cells_per_block']), str(trial['pixels_per_cell']))] = True
         if trial['score'] > top_score:
             top_score = trial['score']
             top_trial = trial

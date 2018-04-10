@@ -1,6 +1,6 @@
 import sys
 import json
-from . import hog
+import hog
 
 
 if __name__ == '__main__':

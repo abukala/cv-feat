@@ -10,7 +10,7 @@ import json
 import time
 import pathlib
 
-RESULTS_DIR = pathlib.Path() / 'results'
+RESULTS_DIR = pathlib.Path() / 'results' / 'baseline'
 
 hog_params = {
     'stl10': {

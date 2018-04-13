@@ -44,7 +44,6 @@ noise_params = {
 }
 
 
-
 def psnr(x, y, maximum=255):
     return 20 * np.log10(maximum) - 10 * np.log10(np.mean(np.power(x - y, 2)))
 
@@ -70,7 +69,15 @@ def evaluate(noise_type, noise_level, images):
             result[method][value] = []
 
     for img in images:
-        noisy = noise[noise_type](img, noise_level)
+        if noise_level == 'random':
+            if noise_type == 'random':
+                n_params = np.random.choice(list(noise_params.values()))
+            else:
+                n_params = noise_params[noise_type]
+            noise_range = np.arange(n_params['min'], n_params['max']+n_params['step'], n_params['step'])
+            noisy = noise[noise_type](img, np.random.choice(noise_range))
+        else:
+            noisy = noise[noise_type](img, noise_level)
         result['input'].append(psnr(img, noisy))
 
         for method in methods.keys():
@@ -94,22 +101,29 @@ def evaluate(noise_type, noise_level, images):
 
         result[method] = str(np.round(np.max(result[method].values()), 2))
 
+    result['noise_type'] = noise_type
+    result['noise_level'] = noise_level
+
     filename = '%s_%s.json' % (sys.argv[1], sys.argv[2])
     fp = RESULTS_PATH / filename
-    with fp.open(mode='w') as output:
+    with fp.open(mode='a') as output:
         json.dump(result, output)
+        output.write('\n')
 
 
 if __name__ == '__main__':
     assert len(sys.argv) == 3
     assert sys.argv[1] in ['gtsrb', 'mnist', 'stl10', 'feret']
-    assert sys.argv[2] in ['gauss', 'sp', 'quantization', 'blur']
+    assert sys.argv[2] in ['gauss', 'sp', 'quantization', 'blur', 'random']
     dataset = eval(sys.argv[1])
     noise_type = sys.argv[2]
     RESULTS_PATH.mkdir(parents=True, exist_ok=True)
-    results = {}
     X, _ = dataset.load_training_data()
-    params = noise_params[noise_type]
-    for noise_level in np.arange(params['min'] + params['step'], params['max'] + params['step'], params['step']):
-        mp.Process(target=evaluate, args=(noise_type, noise_level, X)).start()
+    if noise_type == 'random':
+        mp.Process(target=evaluate, args=('random', 'random', X)).start()
+    else:
+        params = noise_params[noise_type]
+        for noise_level in np.arange(params['min'] + params['step'], params['max'] + params['step'], params['step']):
+            mp.Process(target=evaluate, args=(noise_type, noise_level, X)).start()
+        mp.Process(target=evaluate, args=(noise_type, 'random', X)).start()
 

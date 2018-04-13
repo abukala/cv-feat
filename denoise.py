@@ -101,7 +101,7 @@ def evaluate(noise_type, noise_level, images):
 
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 2
+    assert len(sys.argv) == 3
     assert sys.argv[1] in ['gtsrb', 'mnist', 'stl10', 'feret']
     assert sys.argv[2] in ['gauss', 'sp', 'quantization', 'blur']
     dataset = eval(sys.argv[1])

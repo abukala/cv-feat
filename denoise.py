@@ -117,6 +117,7 @@ if __name__ == '__main__':
     assert len(sys.argv) == 3
     assert sys.argv[1] in ['gtsrb', 'mnist', 'stl10', 'feret']
     assert sys.argv[2] in ['gauss', 'sp', 'quantization', 'blur', 'random']
+    print('Performing denoising for %s, %s' % (sys.argv[1], sys.argv[2]))
     dataset = eval(sys.argv[1])
     noise_type = sys.argv[2]
     RESULTS_PATH.mkdir(parents=True, exist_ok=True)

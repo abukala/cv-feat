@@ -75,7 +75,7 @@ def evaluate(noise_type, noise_level, images):
                 noise_range = np.arange(n_params['min'], n_params['max'] + n_params['step'], n_params['step'])
                 noisy = np.random.choice(list(noise.values()))(img, np.random.choice(noise_range))
             else:
-                n_params = noise_params[noise_level]
+                n_params = noise_params[noise_type]
                 noise_range = np.arange(n_params['min'], n_params['max'] + n_params['step'], n_params['step'])
                 noisy = noise[noise_type](img, np.random.choice(noise_range))
         else:

@@ -111,5 +111,5 @@ if __name__ == '__main__':
     X, _ = dataset.load_training_data()
     params = noise_params[noise_type]
     for noise_level in np.arange(params['min'] + params['step'], params['max'] + params['step'], params['step']):
-        mp.Process(target=evaluate, args=(noise_type, noise_level, X))
+        mp.Process(target=evaluate, args=(noise_type, noise_level, X)).start()
 

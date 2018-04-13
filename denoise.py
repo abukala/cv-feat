@@ -4,7 +4,10 @@ from datasets import stl10, gtsrb, mnist, feret
 from pybm3d.bm3d import bm3d
 from scipy.signal import medfilt as median
 from skimage.restoration import denoise_bilateral as bilateral
-import time
+import json
+import sys
+import multiprocessing as mp
+
 
 from noise import apply_gaussian_noise, apply_quantization_noise, apply_salt_and_pepper_noise, apply_gaussian_blur
 
@@ -68,7 +71,7 @@ def evaluate(noise_type, noise_level, images):
 
     for img in images:
         noisy = noise[noise_type](img, noise_level)
-        result['input'].append(psnr(clean, noisy))
+        result['input'].append(psnr(img, noisy))
 
         for method in methods.keys():
             for value in methods[method]:
@@ -81,7 +84,7 @@ def evaluate(noise_type, noise_level, images):
                 else:
                     raise ValueError
 
-                result[method][value].append(psnr(clean, denoised))
+                result[method][value].append(psnr(img, denoised))
 
     result['input'] = str(np.round(np.mean(result['input']), 2))
 
@@ -91,20 +94,22 @@ def evaluate(noise_type, noise_level, images):
 
         result[method] = str(np.round(np.max(result[method].values()), 2))
 
-    return result
+    filename = '%s_%s.json' % (sys.argv[1], sys.argv[2])
+    fp = RESULTS_PATH / filename
+    with fp.open(mode='w') as output:
+        json.dump(result, output)
 
 
 if __name__ == '__main__':
+    assert len(sys.argv) == 2
+    assert sys.argv[1] in ['gtsrb', 'mnist', 'stl10', 'feret']
+    assert sys.argv[2] in ['gauss', 'sp', 'quantization', 'blur']
+    dataset = eval(sys.argv[1])
+    noise_type = sys.argv[2]
     RESULTS_PATH.mkdir(parents=True, exist_ok=True)
     results = {}
-    for dataset in [gtsrb, mnist, stl10, feret]:
-        X, _ = dataset.load_training_data()
-        clean = X[:10]
-        ts = time.time()
-        for noise_type in noise:
-            params = noise_params[noise_type]
-            for noise_level in np.arange(params['start'], params['stop'] + params['step'], params['step']):
-                results[noise] = evaluate(noise_type, noise_level, clean)
-        evaluation_time = round(time.time() - ts, 1)
-        print('Evaluation time: %s seconds' % evaluation_time)
-        print('Approx time for dataset: %s minutes' % ((len(X) * evaluation_time) / 600))
+    X, _ = dataset.load_training_data()
+    params = noise_params[noise_type]
+    for noise_level in np.arange(params['start'], params['stop'] + params['step'], params['step']):
+        mp.Process(target=evaluate, args=(noise_type, noise_level, X))
+

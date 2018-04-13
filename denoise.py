@@ -68,7 +68,7 @@ def evaluate(noise_type, noise_level, images):
         for value in methods[method]:
             result[method][value] = []
 
-    assert images.shape in [3, 4]
+    assert len(images.shape) in [3, 4]
 
     for img in images:
         if noise_level == 'random':

@@ -7,27 +7,93 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import databases
 
 parameters = {
-    'KNN': {
-        'n_neighbors': 5
+    'gtsrb': {
+        'hog': {
+            'pixels_per_cell': (4, 4),
+            'cells_per_block': (2, 2)
+        },
+        'clf': {
+            'RFC': {
+                'n_estimators': 100
+            },
+            'SVM': {
+                'C': 100
+            },
+            'LDA': {
+                'n_components': 1
+            },
+            'KNN': {
+                'n_neighbors': 25
+            }
+        }
     },
-    'LDA': {
-        'tol': 0.1
+    'stl10': {
+        'hog': {
+            'pixels_per_cell': (16, 16),
+            'cells_per_block': (3, 3)
+        },
+        'clf': {
+            'SVM': {
+                'C': 100
+            },
+            'RFC': {
+                'n_estimators': 100
+            },
+            'LDA': {
+                'n_components': 1
+            },
+            'KNN': {
+                'n_neighbors': 10
+            }
+        }
     },
-    'SVM': {
-        'kernel': 'linear',
-        'C': 0.1,
-        'tol': 0.01
+    'mnist': {
+        'hog': {
+            'pixels_per_cell': (4, 4),
+            'cells_per_block': (1, 1)
+        },
+        'clf': {
+            'RFC': {
+                'n_estimators': 100
+            },
+            'SVM': {
+                'C': 10
+            },
+            'LDA': {
+                'n_components': 1
+            },
+            'KNN': {
+                'n_neighbors': 5
+            }
+        }
     },
-    'RFC': {
-        'n_estimators': 100
-    }
+    'feret': {
+        'hog': {
+            'pixels_per_cell': (32, 32),
+            'cells_per_block': (1, 1)
+        },
+        'clf': {
+            'RFC': {
+                'n_estimators': 100
+            },
+            'SVM': {
+                'C': 100
+            },
+            'LDA': {
+                'n_components': 1
+            },
+            'KNN': {
+                'n_neighbors': 1
+            }
+        }
+    },
 }
 
 feature_params = {
     'gtsrb': {
         'hog': {
             'pixels_per_cell': (4, 4),
-            'cells_per_block': (4, 4),
+            'cells_per_block': (2, 2),
         }
     },
     'mnist': {

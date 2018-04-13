@@ -68,6 +68,8 @@ def evaluate(noise_type, noise_level, images):
         for value in methods[method]:
             result[method][value] = []
 
+    assert images.shape in [3, 4]
+
     for img in images:
         if noise_level == 'random':
             if noise_type == 'random':
@@ -87,9 +89,15 @@ def evaluate(noise_type, noise_level, images):
                 if method == 'bm3d':
                     denoised = bm3d(noisy, value)
                 elif method == 'median':
-                    denoised = median(noisy, kernel_size=(value, value, 1))
+                    if len(img.shape) == 2:
+                        denoised = median(noisy, kernel_size=(value, value))
+                    else:
+                        denoised = median(noisy, kernel_size=(value, value, 1))
                 elif method == 'bilateral':
-                    denoised = bilateral(noisy, sigma_range=value[0], sigma_spatial=value[1])
+                    if len(img.shape) == 2:
+                        denoised = bilateral(noisy, sigma_range=value[0], sigma_spatial=value[1], multichannel=False)
+                    else:
+                        denoised = bilateral(noisy, sigma_range=value[0], sigma_spatial=value[1])
                 else:
                     raise ValueError
 

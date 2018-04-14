@@ -109,7 +109,7 @@ def evaluate(noise_type, noise_level, images):
         for value in methods[method]:
             result[method][value] = np.mean(result[method][value])
 
-        result[method] = str(np.round(np.max(result[method].values()), 2))
+        result[method] = str(np.round(np.max(list(result[method].values())), 2))
 
     result['noise_type'] = noise_type
     result['noise_level'] = noise_level

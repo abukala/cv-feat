@@ -89,33 +89,6 @@ parameters = {
     },
 }
 
-feature_params = {
-    'gtsrb': {
-        'hog': {
-            'pixels_per_cell': (4, 4),
-            'cells_per_block': (2, 2),
-        }
-    },
-    'mnist': {
-        'hog': {
-            'pixels_per_cell': (4, 4),
-            'cells_per_block': (3, 3),
-        }
-    },
-    'stl10': {
-        'hog': {
-            'pixels_per_cell': (6, 6),
-            'cells_per_block': (2, 2),
-        }
-    },
-    'feret': {
-        'hog': {
-            'pixels_per_cell': (24, 24),
-            'cells_per_block': (1, 1)
-        }
-    }
-}
-
 noise = {
     'gauss': {
         'min': 0,
@@ -147,16 +120,17 @@ noise = {
 for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
     for feature in ['none', 'hog']:
         for classifier in ['KNN', 'LDA', 'SVM', 'RFC']:
-            for noise_type in noise:
+            for noise_type in noise.keys():
                 for train_noise in ['no', 'yes']:
                     nr = noise[noise_type]
-                    for num in np.arange(nr['min'], nr['max']+nr['step'], nr['step']):
+                    noise_level_range = np.arange(nr['min']+nr['step'], nr['max']+nr['step'], nr['step'])
+                    for num in noise_level_range:
                         trial = {
                             'Dataset': dataset,
                             'Feature': feature,
                             'Parameters': {
-                                'clf_params': parameters[classifier],
-                                'feature_params': feature_params[dataset]
+                                'clf_params': parameters[dataset]['clf'],
+                                'feature_params': parameters[dataset]['hog']
                             },
                             'Noise_Type': noise_type,
                             'Noise_Level': num,
@@ -165,3 +139,48 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                             'Description': 'full_noise_hog'
                         }
                         databases.add_to_pending(trial)
+                    # Known noise with random intensity
+                    trial = {
+                        'Dataset': dataset,
+                        'Feature': feature,
+                        'Parameters': {
+                            'clf_params': parameters[dataset]['clf'],
+                            'feature_params': parameters[dataset]['hog']
+                        },
+                        'Noise_Type': noise_type,
+                        'Noise_Level': 'random',
+                        'Train_Noise': train_noise,
+                        'Classifier': classifier,
+                        'Description': 'full_noise_hog'
+                    }
+                    databases.add_to_pending(trial)
+                    # Unknown noise with unknown intensity
+                    trial = {
+                        'Dataset': dataset,
+                        'Feature': feature,
+                        'Parameters': {
+                            'clf_params': parameters[dataset]['clf'],
+                            'feature_params': parameters[dataset]['hog']
+                        },
+                        'Noise_Type': 'random',
+                        'Noise_Level': 'random',
+                        'Train_Noise': train_noise,
+                        'Classifier': classifier,
+                        'Description': 'full_noise_hog'
+                    }
+                    databases.add_to_pending(trial)
+            # Clean conditions
+            trial = {
+                'Dataset': dataset,
+                'Feature': feature,
+                'Parameters': {
+                    'clf_params': parameters[dataset]['clf'],
+                    'feature_params': parameters[dataset]['hog']
+                },
+                'Noise_Type': 'none',
+                'Noise_Level': 'none',
+                'Train_Noise': 'no',
+                'Classifier': classifier,
+                'Description': 'full_noise_hog'
+            }
+            databases.add_to_pending(trial)

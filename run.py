@@ -22,7 +22,7 @@ formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-4s %(message)s', dat
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-N_PROCESSES = 24
+N_PROCESSES = 10
 
 noise = {
     'gauss': apply_gaussian_noise,
@@ -32,6 +32,34 @@ noise = {
     'occlusion': apply_occlusion,
     'blur': apply_gaussian_blur
 }
+
+noise_params = {
+    'gauss': {
+        'min': 0,
+        'max': 0.25,
+        'step': 0.025
+    },
+    'quantization': {
+        'min': 0,
+        'max': 0.5,
+        'step': 0.05
+    },
+    'sp': {
+        'min': 0,
+        'max': 0.2,
+        'step': 0.02
+    },
+    'blur': {
+        'min': 0,
+        'max': 5,
+        'step': 0.5
+    }
+}
+
+
+def get_noise_params(noise_type):
+    n_params = noise_params[noise_type]
+    return np.arange(n_params['min']+n_params['step'], n_params['max'] + n_params['step'], n_params['step'])
 
 
 def run():
@@ -48,7 +76,7 @@ def run():
         assert trial['Dataset'] in ['gtsrb', 'cifar10', 'stl10', 'mnist', 'feret']
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
-        assert trial['Noise_Type'] in noise.keys() or 'none'
+        assert trial['Noise_Type'] in noise.keys() or 'none' or 'random'
         assert trial['Train_Noise'] in ['yes', 'no']
 
         scale = False
@@ -67,15 +95,37 @@ def run():
 
         assert isinstance(noise_level, str)
         if noise_type != 'none' and noise_level != 'none':
-            noise_level = eval(noise_level)
-            if noise_type == 'lres':
-                noise_level = int(noise_level)
-            X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])
+            if noise_type == 'random':
+                noise_types = [np.random.choice(list(noise_params.keys())) for _ in X_test]
+                noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
+                X_test = np.array([noise[noise_type](img, noise_level) for img, noise_type, noise_level in zip(X_test, noise_types, noise_levels)])
+            else:
+                if noise_level == 'random':
+                    noise_levels = get_noise_params(noise_type)
+                    X_test = np.array([noise[noise_type](img, noise_level) for img, noise_level in zip(X_test, noise_levels)])
+                else:
+                    noise_level = eval(noise_level)
+                    if noise_type == 'lres':
+                        noise_level = int(noise_level)
+                    X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])
 
             if train_noise == 'yes':
-                X_train = np.array([noise[noise_type](img, noise_level) for img in X_train])
-
-            assert X_test[0].shape == pre_size
+                if noise_level == 'random':
+                    noise_types = [np.random.choice(list(noise_params.keys())) for _ in X_test]
+                    noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
+                    X_train = np.array([noise[noise_type](img, noise_level) for img, noise_type, noise_level in
+                                       zip(X_test, noise_types, noise_levels)])
+                else:
+                    if noise_level == 'random':
+                        noise_levels = get_noise_params(noise_type)
+                        X_train = np.array(
+                            [noise[noise_type](img, noise_level) for img, noise_level in zip(X_test, noise_levels)])
+                    else:
+                        noise_level = eval(noise_level)
+                        if noise_type == 'lres':
+                            noise_level = int(noise_level)
+                        X_train = np.array([noise[noise_type](img, noise_level) for img in X_train])
+                    assert X_test[0].shape == pre_size
             assert X_test[0].dtype == pre_dtype
 
         feature = trial['Feature']

@@ -1,4 +1,5 @@
 cycler==0.10.0
+Cython==0.28.1
 decorator==4.1.2
 matplotlib==2.1.1
 networkx==2.0
@@ -8,6 +9,7 @@ opencv-contrib-python==3.3.0.10
 opencv-python==3.3.0.10
 pandas==0.22.0
 Pillow==4.3.0
+pybm3d==0.2.1
 pyparsing==2.2.0
 python-dateutil==2.6.1
 pytz==2017.3

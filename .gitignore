@@ -4,5 +4,3 @@ data/
 env/
 venv/
 *.out
-results/
-visualizations/

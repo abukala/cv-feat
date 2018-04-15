@@ -7,6 +7,7 @@ from skimage.restoration import denoise_bilateral as bilateral
 import json
 import sys
 import multiprocessing as mp
+import operator
 
 
 from noise import apply_gaussian_noise, apply_quantization_noise, apply_salt_and_pepper_noise, apply_gaussian_blur
@@ -73,12 +74,13 @@ def evaluate(noise_type, noise_level, images):
     for img in images:
         if noise_level == 'random':
             if noise_type == 'random':
-                n_params = noise_params[np.random.choice(list(noise_params.keys()))]
-                noise_range = np.arange(n_params['min'], n_params['max'] + n_params['step'], n_params['step'])
-                noisy = np.random.choice(list(noise.values()))(img, np.random.choice(noise_range))
+                n_type = np.random.choice(list(noise.keys()))
+                n_params = noise_params[n_type]
+                noise_range = np.arange(n_params['min']+n_params['step'], n_params['max'] + n_params['step'], n_params['step'])
+                noisy = noise[n_type](img, np.random.choice(noise_range))
             else:
                 n_params = noise_params[noise_type]
-                noise_range = np.arange(n_params['min'], n_params['max'] + n_params['step'], n_params['step'])
+                noise_range = np.arange(n_params['min']+n_params['step'], n_params['max'] + n_params['step'], n_params['step'])
                 noisy = noise[noise_type](img, np.random.choice(noise_range))
         else:
             noisy = noise[noise_type](img, noise_level)
@@ -95,9 +97,9 @@ def evaluate(noise_type, noise_level, images):
                         denoised = median(noisy, kernel_size=(value, value, 1))
                 elif method == 'bilateral':
                     if len(img.shape) == 2:
-                        denoised = bilateral(noisy, sigma_range=value[0], sigma_spatial=value[1], multichannel=False)
+                        denoised = bilateral(noisy, sigma_color=value[0], sigma_spatial=value[1], multichannel=False)
                     else:
-                        denoised = bilateral(noisy, sigma_range=value[0], sigma_spatial=value[1])
+                        denoised = bilateral(noisy, sigma_color=value[0], sigma_spatial=value[1], multichannel=True)
                 else:
                     raise ValueError
 
@@ -109,7 +111,8 @@ def evaluate(noise_type, noise_level, images):
         for value in methods[method]:
             result[method][value] = np.mean(result[method][value])
 
-        result[method] = str(np.round(np.max(list(result[method].values())), 2))
+        result[method] = max(result[method].items(), key=operator.itemgetter(1))
+        result[method] = result[method][0], round(result[method][1], 2)
 
     result['noise_type'] = noise_type
     result['noise_level'] = noise_level

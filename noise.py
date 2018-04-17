@@ -6,13 +6,14 @@ from scipy import misc
 import logging
 
 
-def rescale(image, max_value=255):
-    assert max_value in [1.0, 255]
+def rescale(image, max_value=1.0):
+    if max_value == 255:
+        return np.clip(image, 0, max_value).astype(np.uint8)
+    else:
+        return np.clip(image, 0, max_value).astype(np.float64)
 
-    return np.clip(image, 0, max_value).astype(np.uint8)
 
-
-def apply_gaussian_noise(image, std, mean=0.0, max_value=255):
+def apply_gaussian_noise(image, std, mean=0.0, max_value=1.0):
     assert max_value in [1.0, 255]
 
     noisy = image + np.random.normal(mean, std, image.shape) * max_value
@@ -21,11 +22,11 @@ def apply_gaussian_noise(image, std, mean=0.0, max_value=255):
     return noisy
 
 
-def apply_gaussian_blur(image, sigma):
-    return img_as_ubyte(np.clip(gaussian(image, sigma=sigma), a_min=0, a_max=1))
+def apply_gaussian_blur(image, sigma, max_value=1.0, multichannel=True):
+    return rescale(gaussian(image, sigma=sigma, multichannel=multichannel), max_value)
 
 
-def apply_salt_and_pepper_noise(image, p, max_value=255):
+def apply_salt_and_pepper_noise(image, p, max_value=1.0):
     assert max_value in [1.0, 255]
 
     mask = np.random.random(image.shape)
@@ -37,7 +38,7 @@ def apply_salt_and_pepper_noise(image, p, max_value=255):
     return noisy
 
 
-def apply_quantization_noise(image, q, max_value=255):
+def apply_quantization_noise(image, q, max_value=1.0):
     assert max_value in [1.0, 255]
 
     noisy = image + q * (np.random.random(image.shape) - 0.5) * max_value
@@ -46,7 +47,7 @@ def apply_quantization_noise(image, q, max_value=255):
     return noisy
 
 
-def lower_resolution(image, scaling_factor, max_value=255):
+def lower_resolution(image, scaling_factor, max_value=1.0):
     assert max_value in [1.0, 255]
 
     if max_value == 1.0:

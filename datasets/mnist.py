@@ -16,6 +16,7 @@ download_url = [
 
 # Img size = (28, 28)
 
+
 def _load_images(url):
     file = gzip.open(url.open(mode='rb'))
     _ = file.read(4)
@@ -26,6 +27,7 @@ def _load_images(url):
     images = np.array([np.reshape(struct.unpack('>%sB' % l, file.read(l)), (rows, cols)) for _ in range(images_count)], dtype=np.uint8)
     assert len(images) == images_count
     assert images[0].shape == (rows, cols)
+    images = np.array([img/256 for img in images])
 
     return images
 

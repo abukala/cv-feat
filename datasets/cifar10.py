@@ -37,7 +37,7 @@ def _convert_images(raw):
     images = raw_float.reshape([-1, num_channels, img_size, img_size])
     images = images.transpose([0, 2, 3, 1])
 
-    return images
+    return np.array([img/256 for img in images])
 
 
 def load_training_data():

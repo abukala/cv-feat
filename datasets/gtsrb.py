@@ -1,7 +1,9 @@
-from .common import DATA_PATH, resize
+from .common import DATA_PATH
 import os
-import cv2
 import csv
+import skimage.io
+import numpy as np
+from skimage.transform import resize
 
 train_dir = DATA_PATH / 'GTSRB' / 'Final_Training' / 'Images'
 test_dir = DATA_PATH / 'GTSRB' / 'Final_Test' / 'Images'
@@ -12,6 +14,19 @@ download_url = [
     "http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_Images.zip",
     "http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_GT.zip"
 ]
+
+
+def crop_sq(image):
+    height, width = image.shape[:2]
+    if height < width:
+        offset = int((width - height) / 2)
+        image = image[:, offset:(height + offset)]
+    elif height > width:
+        offset = int((height - width) / 2)
+        image = image[offset:(width + offset), :]
+    assert image.shape[0] == image.shape[1], "Cropping didnt work, shape: %s" % image.shape[:2]
+
+    return image
 
 
 def load_training_data():
@@ -25,11 +40,11 @@ def load_training_data():
         for file in files:
             if file.endswith('.csv'):
                 continue
-            img = cv2.imread(os.path.join(dir_path, file))
+            img = skimage.io.imread(os.path.join(dir_path, file))/256
             x_train.append(img)
             y_train.append(class_id)
 
-    return resize(x_train, size), y_train
+    return np.array([resize(crop_sq(img), size) for img in x_train]), y_train
 
 
 def load_test_data():
@@ -39,8 +54,8 @@ def load_test_data():
     next(gt_file)
     for row in gt_file:
         class_id = int(row[7])
-        img = cv2.imread(os.path.join(path, row[0]))
+        img = skimage.io.imread(os.path.join(path, row[0]))/256
         x_test.append(img)
         y_test.append(class_id)
 
-    return resize(x_test, size), y_test
+    return np.array([resize(crop_sq(img), size) for img in x_test]), y_test

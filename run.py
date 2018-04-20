@@ -3,7 +3,7 @@ import multiprocessing as mp
 from databases import pull_pending, submit_result
 from datasets import cifar10, stl10, gtsrb, mnist, feret
 from features import get_sift, get_surf, get_hog, normalize_hist, get_pix
-from noise import apply_gaussian_noise, apply_salt_and_pepper_noise, apply_quantization_noise, lower_resolution, apply_occlusion, apply_gaussian_blur
+from noise import apply_noise
 
 from sklearn import metrics
 from sklearn.neighbors import KNeighborsClassifier as KNN
@@ -11,7 +11,6 @@ from sklearn.ensemble import RandomForestClassifier as RFC
 from sklearn.svm import SVC as SVM
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import numpy as np
-from skimage.filters import gaussian
 
 import logging
 logger = logging.getLogger('runner')
@@ -23,15 +22,6 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 N_PROCESSES = 10
-
-noise = {
-    'gauss': apply_gaussian_noise,
-    'quantization': apply_quantization_noise,
-    'sp': apply_salt_and_pepper_noise,
-    'lres': lower_resolution,
-    'occlusion': apply_occlusion,
-    'blur': apply_gaussian_blur
-}
 
 noise_params = {
     'gauss': {
@@ -76,7 +66,7 @@ def run():
         assert trial['Dataset'] in ['gtsrb', 'cifar10', 'stl10', 'mnist', 'feret']
         assert trial['Classifier'] in ['KNN', 'RFC', 'SVM', 'LDA']
         assert trial['Feature'] in ['sift', 'surf', 'hog', 'none']
-        assert trial['Noise_Type'] in noise.keys() or 'none' or 'random'
+        assert trial['Noise_Type'] in noise_params.keys() or 'none' or 'random'
         assert trial['Train_Noise'] in ['yes', 'no']
 
         scale = False
@@ -90,43 +80,33 @@ def run():
 
         noise_type, noise_level, train_noise = trial['Noise_Type'], trial['Noise_Level'], trial['Train_Noise']
 
-        pre_size = X_test[0].shape
-        pre_dtype = X_test[0].dtype
-
-        assert isinstance(noise_level, str)
         if noise_type != 'none' and noise_level != 'none':
             if noise_type == 'random':
                 noise_types = [np.random.choice(list(noise_params.keys())) for _ in X_test]
                 noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
-                X_test = np.array([noise[noise_type](img, noise_level) for img, noise_type, noise_level in zip(X_test, noise_types, noise_levels)])
+                X_test = np.array([apply_noise(img, noise_type, noise_level) for img, noise_type, noise_level in zip(X_test, noise_types, noise_levels)])
             else:
                 if noise_level == 'random':
                     noise_levels = get_noise_params(noise_type)
-                    X_test = np.array([noise[noise_type](img, noise_level) for img, noise_level in zip(X_test, noise_levels)])
+                    X_test = np.array([apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_test, noise_levels)])
                 else:
                     noise_level = eval(noise_level)
-                    if noise_type == 'lres':
-                        noise_level = int(noise_level)
-                    X_test = np.array([noise[noise_type](img, noise_level) for img in X_test])
+                    X_test = np.array([apply_noise(img, noise_type, noise_level) for img in X_test])
 
             if train_noise == 'yes':
                 if noise_level == 'random':
                     noise_types = [np.random.choice(list(noise_params.keys())) for _ in X_test]
                     noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
-                    X_train = np.array([noise[noise_type](img, noise_level) for img, noise_type, noise_level in
+                    X_train = np.array([apply_noise(img, noise_type, noise_level) for img, noise_type, noise_level in
                                        zip(X_test, noise_types, noise_levels)])
                 else:
                     if noise_level == 'random':
                         noise_levels = get_noise_params(noise_type)
                         X_train = np.array(
-                            [noise[noise_type](img, noise_level) for img, noise_level in zip(X_test, noise_levels)])
+                            [apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_test, noise_levels)])
                     else:
                         noise_level = eval(noise_level)
-                        if noise_type == 'lres':
-                            noise_level = int(noise_level)
-                        X_train = np.array([noise[noise_type](img, noise_level) for img in X_train])
-                    assert X_test[0].shape == pre_size
-            assert X_test[0].dtype == pre_dtype
+                        X_train = np.array([apply_noise(img, noise_type, noise_level) for img in X_train])
 
         feature = trial['Feature']
         params = eval(trial['Parameters'])

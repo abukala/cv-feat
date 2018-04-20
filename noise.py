@@ -1,6 +1,6 @@
 import numpy as np
 
-from skimage import color, img_as_ubyte
+from skimage import color
 from skimage.filters import gaussian
 from scipy import misc
 import logging
@@ -22,7 +22,7 @@ def apply_gaussian_noise(image, std, mean=0.0, max_value=1.0):
     return noisy
 
 
-def apply_gaussian_blur(image, sigma, max_value=1.0, multichannel=True):
+def apply_gaussian_blur(image, sigma, max_value=1.0, multichannel=False):
     return rescale(gaussian(image, sigma=sigma, multichannel=multichannel), max_value)
 
 
@@ -90,7 +90,7 @@ def apply_occlusion(image, fraction):
     occlusion_width = int(np.round(np.sqrt(occlusion_area)))
 
     if occlusion_width > image_width or occlusion_width > image_height:
-        logging.warn('Occlusion larger than the image. Occlusion shape: (%d, %d), image shape: (%d, %d).' %
+        logging.warning('Occlusion larger than the image. Occlusion shape: (%d, %d), image shape: (%d, %d).' %
                      (occlusion_width, occlusion_width, image_width, image_height))
 
     occluded_image = image.copy()
@@ -109,3 +109,33 @@ def apply_occlusion(image, fraction):
     occlusion_start_y:(occlusion_start_y + occlusion_width)] = 0
 
     return occluded_image
+
+
+def apply_noise(img, noise_type, noise_level):
+    assert img.dtype == np.float64
+    assert img.max() <=1 and img.min() >= 0
+
+    if noise_type == 'lres':
+        noise_level = int(noise_level)
+    else:
+        noise_level = float(noise_level)
+
+    if noise_type == 'gauss':
+        noisy = apply_gaussian_noise(img, noise_level)
+    elif noise_type == 'sp':
+        noisy = apply_salt_and_pepper_noise(img, noise_level)
+    elif noise_type == 'quantization':
+        noisy = apply_quantization_noise(img, noise_level)
+    elif noise_type == 'blur':
+        noisy = apply_gaussian_blur(img, noise_level)
+    elif noise_type == 'occlusion':
+        noisy = apply_occlusion(img, noise_level)
+    elif noise_type == 'lres':
+        noisy = lower_resolution(img, noise_level)
+    else:
+        raise ValueError('Unknown noise_type: %s' % noise_type)
+
+    assert noisy.dtype == img.dtype
+    assert noisy.max() <= 1 and noisy.min() >= 0
+
+    return noisy

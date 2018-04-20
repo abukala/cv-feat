@@ -1,5 +1,6 @@
 import numpy as np
 from .common import DATA_PATH
+from skimage.color import rgb2gray
 
 stl10_path = DATA_PATH / 'stl10_binary'
 download_url = "http://ai.stanford.edu/~acoates/stl10/stl10_binary.tar.gz"
@@ -12,7 +13,7 @@ def _load_images(url):
         everything = np.fromfile(f, dtype=np.uint8)
         images = np.reshape(everything, (-1, 3, 96, 96))
         images = np.transpose(images, (0, 3, 2, 1))
-        images = np.array([img/256 for img in images])
+        images = np.array([rgb2gray(img) for img in images])
         return images
 
 

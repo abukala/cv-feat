@@ -91,7 +91,7 @@ def select(trial=None, description=None, database_path=None, connection=None, fe
     if trial is not None:
         command += ' %s' % _selector(trial)
 
-    command += ' ORDER BY Description, Train_Noise, Dataset, Feature, Noise_Type, Noise_Level'
+    command += ' ORDER BY Dataset, Feature, Noise_Type, Train_Noise, Noise_Type, Noise_Level'
 
     return _execute(command, database_path=database_path, connection=connection, fetch=fetch)
 

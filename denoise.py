@@ -1,25 +1,19 @@
 import numpy as np
 import pathlib
 from datasets import stl10, gtsrb, mnist, feret
+from skimage.measure import compare_psnr, compare_ssim
 from pybm3d.bm3d import bm3d
 from scipy.signal import medfilt as median
 from skimage.restoration import denoise_bilateral as bilateral
+from skimage.restoration import unsupervised_wiener as wiener
 import json
 import sys
 import multiprocessing as mp
 import operator
-import scipy.misc
-
-from noise import apply_gaussian_noise, apply_quantization_noise, apply_salt_and_pepper_noise, apply_gaussian_blur
+from tqdm import tqdm
+from noise import apply_noise, rescale
 
 RESULTS_PATH = pathlib.Path() / 'results' / 'baseline'
-
-noise = {
-    'gauss': apply_gaussian_noise,
-    'quantization': apply_quantization_noise,
-    'sp': apply_salt_and_pepper_noise,
-    'blur': apply_gaussian_blur
-}
 
 noise_params = {
     'gauss': {
@@ -45,72 +39,83 @@ noise_params = {
 }
 
 
-def psnr(x, y, maximum=1.0):
-    return 20 * np.log10(maximum) - 10 * np.log10(np.mean(np.power(x.astype(np.float64) - y.astype(np.float64), 2)))
+def denoise(img, method, value):
+    assert method in ['bm3d', 'median', 'bilateral', 'wiener']
+    assert img.dtype == np.float64
+    assert img.max() <= 1 and img.min() >= 0
+
+    if method == 'bm3d':
+        denoised = bm3d(img, value)
+    elif method == 'median':
+        denoised = median(img, kernel_size=(value, value))
+    elif method == 'bilateral':
+        denoised = bilateral(img, sigma_color=value[0], sigma_spatial=value[1], multichannel=False)
+    elif method == 'wiener':
+        psf = np.ones((value[0], value[0])) / value[1]
+        denoised, _ = wiener(img, psf)
+    else:
+        raise ValueError('Unknown method: %s' % method)
+
+    denoised = rescale(denoised)
+
+    assert denoised.dtype == img.dtype
+    assert denoised.max() <= 1 and denoised.min() >= 0
+
+    return denoised
 
 
 def evaluate(noise_type, noise_level, images):
     methods = {
         'bm3d': [0.05, 0.1, 0.2, 0.4, 0.5],
         'median': [3, 5, 7, 9, 11, 13],
-        'bilateral': [(x, y) for x in [0.05, 0.1, 0.2, 0.3, 0.4, 0.5] for y in [3, 5, 7]]
+        'bilateral': [(x, y) for x in [0.05, 0.1, 0.2, 0.3, 0.4, 0.5] for y in [3, 5, 7]],
+        'wiener': [(x, y) for x in range(1, 6) for y in range(1, 26)]
     }
 
     result = {
-        'input': [],
-        'bm3d': {},
-        'median': {},
-        'bilateral': {}
+        'input': []
     }
+    if noise_type in ['gauss', 'sp', 'quantization']:
+        tested_methods = ['bm3d', 'median', 'bilateral']
+        measure = compare_psnr
+    elif noise_type == 'blur':
+        tested_methods = ['wiener']
+        measure = compare_ssim
+    else:
+        raise ValueError('No denoising methods known for %s' % noise_type)
 
-    for method in methods.keys():
+    for method in tested_methods:
         result[method] = {}
 
         for value in methods[method]:
             result[method][value] = []
 
-    assert len(images.shape) in [3, 4]
+    assert len(images.shape) == 3
 
-    for i, img in enumerate(images):
+    for i, img in tqdm(enumerate(images), total=len(images)):
         if noise_level == 'random':
             if noise_type == 'random':
-                n_type = np.random.choice(list(noise.keys()))
+                n_type = np.random.choice(list(noise_params.keys()))
                 n_params = noise_params[n_type]
                 noise_range = np.arange(n_params['min']+n_params['step'], n_params['max'] + n_params['step'], n_params['step'])
-                noisy = noise[n_type](img, np.random.choice(noise_range))
+                noisy = apply_noise(img, n_type, np.random.choice(noise_range))
             else:
                 n_params = noise_params[noise_type]
                 noise_range = np.arange(n_params['min']+n_params['step'], n_params['max'] + n_params['step'], n_params['step'])
-                noisy = noise[noise_type](img, np.random.choice(noise_range))
+                noisy = apply_noise(img, noise_type, np.random.choice(noise_range))
         else:
-            noisy = noise[noise_type](img, noise_level)
-        assert noisy.dtype == np.float64
-        assert noisy.max() <= 1 and noisy.min() >= 0
-        result['input'].append(psnr(img, noisy))
+            noisy = apply_noise(img, noise_type, noise_level)
 
-        for method in methods.keys():
+        result['input'].append(measure(img, noisy))
+
+        for method in tested_methods:
             for value in methods[method]:
-                if method == 'bm3d':
-                    denoised = bm3d(noisy, value)
-                elif method == 'median':
-                    if len(img.shape) == 2:
-                        denoised = median(noisy, kernel_size=(value, value))
-                    else:
-                        denoised = median(noisy, kernel_size=(value, value, 1))
-                elif method == 'bilateral':
-                    if len(img.shape) == 2:
-                        denoised = bilateral(noisy, sigma_color=value[0], sigma_spatial=value[1], multichannel=False)
-                    else:
-                        denoised = bilateral(noisy, sigma_color=value[0], sigma_spatial=value[1], multichannel=True)
-                else:
-                    raise ValueError
-                assert denoised.dtype == np.float64
-                # assert denoised.max() <= 1 and denoised.min() >= 0, print(denoised.max(), denoised.min())
-                result[method][value].append(psnr(img, denoised))
+                denoised = denoise(noisy, method, value)
+                result[method][value].append(measure(img, denoised))
 
     result['input'] = str(np.round(np.mean(result['input']), 2))
 
-    for method in methods.keys():
+    for method in tested_methods:
         for value in methods[method]:
             result[method][value] = np.mean(result[method][value])
 
@@ -130,8 +135,7 @@ def evaluate(noise_type, noise_level, images):
 if __name__ == '__main__':
     assert len(sys.argv) == 3
     assert sys.argv[1] in ['gtsrb', 'mnist', 'stl10', 'feret']
-    assert sys.argv[2] in ['gauss', 'sp', 'quantization', 'blur', 'random']
-    print('Denoising grid-search for (%s, %s)' % (sys.argv[1], sys.argv[2]))
+    print('Searching for optimal denoise params: %r' % sys.argv[1:])
     dataset = eval(sys.argv[1])
     noise_type = sys.argv[2]
     RESULTS_PATH.mkdir(parents=True, exist_ok=True)
@@ -139,6 +143,8 @@ if __name__ == '__main__':
 
     assert X[0].dtype == np.float64
     assert X[0].max() <= 1 and X[0].min() >= 0
+
+    X = X[:10]
 
     if noise_type == 'random':
         mp.Process(target=evaluate, args=('random', 'random', X)).start()

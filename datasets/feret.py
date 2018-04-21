@@ -15,6 +15,7 @@ params = {
 
 # Img shape = (256, 384)
 
+
 def _load_batch(path, subset=None):
     img = []
     cls = []
@@ -22,7 +23,7 @@ def _load_batch(path, subset=None):
         if subset:
             if file.name[5:7] != subset:
                 continue
-        img.append(imread(bz2.BZ2File(file.open(mode='rb'))))
+        img.append(imread(bz2.BZ2File(file.open(mode='rb')))/256)
         cls.append(int(file.name[:5]))
     return img, cls
 
@@ -37,7 +38,6 @@ def load_data(subset=None, train_ratio=0.7):
     split = int(len(choices)*train_ratio)
     np.random.seed(0)
     np.random.shuffle(choices)
-    img = np.array([i/256 for i in img])
     cls = np.array(cls)
     X_train, y_train = img[choices[:split]], cls[choices[:split]]
     X_test, y_test = img[choices[split:]], cls[choices[split:]]

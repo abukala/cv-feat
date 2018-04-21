@@ -2,7 +2,7 @@ import multiprocessing as mp
 
 from databases import pull_pending, submit_result
 from datasets import cifar10, stl10, gtsrb, mnist, feret
-from features import get_sift, get_surf, get_hog, normalize_hist, get_pix
+from features import get_hog, get_pix
 from noise import apply_noise
 
 from sklearn import metrics
@@ -43,6 +43,11 @@ noise_params = {
         'min': 0,
         'max': 5,
         'step': 0.5
+    },
+    'occlusion': {
+        'min': 0,
+        'max': 0.8,
+        'step': 0.1
     }
 }
 
@@ -115,15 +120,7 @@ def run():
             if feature in params['feature_params']:
                 feature_params = params['feature_params'][feature]
 
-        if feature == 'sift':
-            X_train, kmeans = get_sift(X_train, **feature_params)
-            X_test, _ = get_sift(X_test, kmeans, **feature_params)
-            X_train, X_test = normalize_hist(X_train, X_test)
-        elif feature == 'surf':
-            X_train, kmeans = get_surf(X_train, **feature_params)
-            X_test, _ = get_surf(X_test, kmeans, **feature_params)
-            X_train, X_test = normalize_hist(X_train, X_test)
-        elif feature == 'hog':
+        if feature == 'hog':
             X_train = get_hog(X_train, **feature_params)
             X_test = get_hog(X_test, **feature_params)
         elif feature == 'none':

@@ -1,5 +1,4 @@
 import numpy as np
-import cv2
 from sklearn.cluster import KMeans
 from skimage.feature import hog
 from skimage.color import rgb2gray
@@ -16,19 +15,6 @@ def get_hog(X, pixels_per_cell=(8, 8), cells_per_block=(3, 3)):
     return X
 
 
-def get_surf(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
-    surf = cv2.xfeatures2d.SURF_create()
-    descriptors = []
-    for image in X:
-        _, des = surf.detectAndCompute(image, None)
-        if des:
-            descriptors.append(des)
-        else:
-            descriptors.append([])
-
-    hist, kmeans = _get_hist(descriptors, kmeans, k, multi, n_init, max_iter)
-
-    return hist, kmeans
 
 
 def _get_hist(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
@@ -60,28 +46,13 @@ def _get_hist(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
     return hist, kmeans
 
 
-def get_sift(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
-    sift = cv2.xfeatures2d.SIFT_create()
-    descriptors = []
-    for image in X:
-        _, des = sift.detectAndCompute(image, None)
-        if des:
-            descriptors.append(des)
-        else:
-            descriptors.append([])
-
-    hist, kmeans = _get_hist(descriptors, kmeans, k, multi, n_init, max_iter)
-
-    return hist, kmeans
-
-
-def get_pix(X, scale=False):
-    assert X.dtype == np.dtype('uint8') and X[0][..., 0].min() >= 0 and X[0][..., 0].max() <= 255
+def get_pix(X, scale=False, max_value=1.0):
     # Rescale images
     if scale:
         X = [rescale(img, scale) for img in X]
     # Normalize images
-    X = [img/255 for img in X]
+    if max_value == 255:
+        X = [img/255 for img in X]
     # Flatten data
     X = [x.flatten() for x in X]
 
@@ -95,3 +66,31 @@ def normalize_hist(X_train, X_test):
 
     return X_train, X_test
 
+# def get_surf(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
+#     surf = cv2.xfeatures2d.SURF_create()
+#     descriptors = []
+#     for image in X:
+#         _, des = surf.detectAndCompute(image, None)
+#         if des:
+#             descriptors.append(des)
+#         else:
+#             descriptors.append([])
+#
+#     hist, kmeans = _get_hist(descriptors, kmeans, k, multi, n_init, max_iter)
+#
+#     return hist, kmeans
+
+
+# def get_sift(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):
+#     sift = cv2.xfeatures2d.SIFT_create()
+#     descriptors = []
+#     for image in X:
+#         _, des = sift.detectAndCompute(image, None)
+#         if des:
+#             descriptors.append(des)
+#         else:
+#             descriptors.append([])
+#
+#     hist, kmeans = _get_hist(descriptors, kmeans, k, multi, n_init, max_iter)
+#
+#     return hist, kmeans

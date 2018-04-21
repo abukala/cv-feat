@@ -144,7 +144,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                         'Dataset': dataset,
                         'Feature': feature,
                         'Parameters': {
-                            'clf_params': parameters[dataset]['clf'],
+                            'clf_params': parameters[dataset]['clf'][classifier],
                             'feature_params': parameters[dataset]['hog']
                         },
                         'Noise_Type': noise_type,
@@ -159,7 +159,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                         'Dataset': dataset,
                         'Feature': feature,
                         'Parameters': {
-                            'clf_params': parameters[dataset]['clf'],
+                            'clf_params': parameters[dataset]['clf'][classifier],
                             'feature_params': parameters[dataset]['hog']
                         },
                         'Noise_Type': 'random',
@@ -174,7 +174,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                 'Dataset': dataset,
                 'Feature': feature,
                 'Parameters': {
-                    'clf_params': parameters[dataset]['clf'],
+                    'clf_params': parameters[dataset]['clf'][classifier],
                     'feature_params': parameters[dataset]['hog']
                 },
                 'Noise_Type': 'none',

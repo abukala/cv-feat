@@ -1,20 +1,13 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from skimage.feature import hog
-from skimage.color import rgb2gray
 from skimage.transform import rescale
 import logging
 logger = logging.getLogger(__name__)
 
 
 def get_hog(X, pixels_per_cell=(8, 8), cells_per_block=(3, 3)):
-    if len(X.shape) > 3:
-        X = [rgb2gray(img) for img in X]
-    X = [hog(img, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block, block_norm="L1-sqrt") for img in X]
-
-    return X
-
-
+    return [hog(img, pixels_per_cell=pixels_per_cell, cells_per_block=cells_per_block, block_norm="L1-sqrt") for img in X]
 
 
 def _get_hist(X, kmeans=None, k=500, multi=100, n_init=1, max_iter=10):

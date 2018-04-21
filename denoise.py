@@ -144,8 +144,6 @@ if __name__ == '__main__':
     assert X[0].dtype == np.float64
     assert X[0].max() <= 1 and X[0].min() >= 0
 
-    X = X[:10]
-
     if noise_type == 'random':
         mp.Process(target=evaluate, args=('random', 'random', X)).start()
     else:

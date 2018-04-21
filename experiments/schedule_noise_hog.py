@@ -135,8 +135,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                             'Noise_Type': noise_type,
                             'Noise_Level': num,
                             'Train_Noise': train_noise,
-                            'Classifier': classifier,
-                            'Description': 'full_noise_hog'
+                            'Classifier': classifier
                         }
                         databases.add_to_pending(trial)
                     # Known noise with random intensity
@@ -150,8 +149,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                         'Noise_Type': noise_type,
                         'Noise_Level': 'random',
                         'Train_Noise': train_noise,
-                        'Classifier': classifier,
-                        'Description': 'full_noise_hog'
+                        'Classifier': classifier
                     }
                     databases.add_to_pending(trial)
                     # Unknown noise with unknown intensity
@@ -165,8 +163,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                         'Noise_Type': 'random',
                         'Noise_Level': 'random',
                         'Train_Noise': train_noise,
-                        'Classifier': classifier,
-                        'Description': 'full_noise_hog'
+                        'Classifier': classifier
                     }
                     databases.add_to_pending(trial)
             # Clean conditions
@@ -180,7 +177,6 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                 'Noise_Type': 'none',
                 'Noise_Level': 'none',
                 'Train_Noise': 'no',
-                'Classifier': classifier,
-                'Description': 'full_noise_hog'
+                'Classifier': classifier
             }
             databases.add_to_pending(trial)

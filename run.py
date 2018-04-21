@@ -95,7 +95,6 @@ def run():
                     noise_levels = get_noise_params(noise_type)
                     X_test = np.array([apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_test, noise_levels)])
                 else:
-                    noise_level = eval(noise_level)
                     X_test = np.array([apply_noise(img, noise_type, noise_level) for img in X_test])
 
             if train_noise == 'yes':
@@ -110,7 +109,6 @@ def run():
                         X_train = np.array(
                             [apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_test, noise_levels)])
                     else:
-                        noise_level = eval(noise_level)
                         X_train = np.array([apply_noise(img, noise_type, noise_level) for img in X_train])
 
         feature = trial['Feature']
@@ -126,6 +124,8 @@ def run():
         elif feature == 'none':
             X_train = get_pix(X_train, scale=scale)
             X_test = get_pix(X_test, scale=scale)
+
+        assert len(X_train) == len(y_train), trial
 
         clf_params = params['clf_params']
         clf = eval(trial['Classifier'])(**clf_params)

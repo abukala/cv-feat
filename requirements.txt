@@ -2,11 +2,13 @@ cycler==0.10.0
 Cython==0.28.1
 decorator==4.1.2
 matplotlib==2.1.1
+memory-profiler==0.52.0
 networkx==2.0
 numpy==1.13.3
 olefile==0.44
 pandas==0.22.0
 Pillow==4.3.0
+psutil==5.4.5
 pybm3d==0.2.1
 pyparsing==2.2.0
 python-dateutil==2.6.1

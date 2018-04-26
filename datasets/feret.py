@@ -16,7 +16,6 @@ params = {
 
 # Img shape = (256, 384)
 
-
 def _load_batch(path):
     img = []
     cls = []
@@ -25,10 +24,10 @@ def _load_batch(path):
     return img, cls
 
 @profile
-def load_data(subset=None, train_ratio=0.7):
-    img, cls = _load_batch(FIRST_BATCH, subset)
+def load_data(train_ratio=0.7):
+    img, cls = _load_batch(FIRST_BATCH)
     print('first batch loaded')
-    img2, cls2 = _load_batch(SECOND_BATCH, subset)
+    img2, cls2 = _load_batch(SECOND_BATCH)
     print('second batch loaded')
     img.extend(img2)
     cls.extend(cls2)

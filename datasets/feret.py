@@ -18,27 +18,22 @@ params = {
 
 
 def _load_batch(path):
-    img = [imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in path.iterdir()]
-    cls = [int(file.name[:5]) for file in path.iterdir()]
+    img = np.array([imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in path.iterdir()])
+    cls = np.array([int(file.name[:5]) for file in path.iterdir()])
     return img, cls
 
 
 @profile
 def load_data(train_ratio=0.7):
-    img, cls = _load_batch(FIRST_BATCH)
-    img2, cls2 = _load_batch(SECOND_BATCH)
-    img.extend(img2)
-    cls.extend(cls2)
+    img = np.concatenate(([imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in FIRST_BATCH.iterdir()],
+                          [imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in SECOND_BATCH.iterdir()]))
+    cls = np.concatenate(([int(file.name[:5]) for file in FIRST_BATCH.iterdir()], [int(file.name[:5]) for file in SECOND_BATCH.iterdir()]))
     assert len(img) == len(cls)
     choices = np.arange(len(img))
     split = int(len(choices)*train_ratio)
     np.random.seed(0)
     np.random.shuffle(choices)
-    cls = np.array(cls)
-    img = np.array(img)
-    X_train, y_train = img[choices[:split]], cls[choices[:split]]
-    X_test, y_test = img[choices[split:]], cls[choices[split:]]
-    return (X_train, y_train), (X_test, y_test)
+    return (img[choices[:split]], cls[choices[:split]]), (img[choices[split:]], cls[choices[split:]])
 
 
 def load_training_data():

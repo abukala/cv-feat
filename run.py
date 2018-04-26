@@ -87,7 +87,7 @@ def run():
 
         if noise_type != 'none' and noise_level != 'none':
             if noise_type == 'random':
-                noise_types = [np.random.choice(list(noise_params.keys())) for _ in X_test]
+                noise_types = [np.random.choice(['sp', 'gauss', 'quantization']) for _ in X_train]
                 noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
                 X_test = np.array([apply_noise(img, noise_type, noise_level) for img, noise_type, noise_level in zip(X_test, noise_types, noise_levels)])
             else:
@@ -126,6 +126,7 @@ def run():
             X_test = get_pix(X_test, scale=scale)
 
         assert len(X_train) == len(y_train), trial
+        assert len(X_test) == len(y_test), trial
 
         clf_params = params['clf_params']
         clf = eval(trial['Classifier'])(**clf_params)

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH -N 1
-#SBATCH --ntasks-per-node=10
+#SBATCH --ntasks-per-node=8
 #SBATCH --mem-per-cpu=15GB
 #SBATCH --time=72:00:00
 

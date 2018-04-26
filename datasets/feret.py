@@ -16,15 +16,12 @@ params = {
 
 # Img shape = (256, 384)
 
-def _load_batch(path, subset=None):
+
+def _load_batch(path):
     img = []
     cls = []
-    for file in path.iterdir():
-        if subset:
-            if file.name[5:7] != subset:
-                continue
-        img.append(imread(bz2.BZ2File(file.open(mode='rb')))/255)
-        cls.append(int(file.name[:5]))
+    img = [imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in path.iterdir()]
+    cls = [int(file.name[:]) for file in path.iterdir()]
     return img, cls
 
 @profile

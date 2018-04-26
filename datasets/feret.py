@@ -20,7 +20,7 @@ def _load_batch(path):
     img = []
     cls = []
     img = [imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in path.iterdir()]
-    cls = [int(file.name[:]) for file in path.iterdir()]
+    cls = [int(file.name[:5]) for file in path.iterdir()]
     return img, cls
 
 @profile

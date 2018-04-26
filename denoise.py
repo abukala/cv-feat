@@ -141,6 +141,11 @@ if __name__ == '__main__':
     RESULTS_PATH.mkdir(parents=True, exist_ok=True)
     X, _ = dataset.load_training_data()
 
+    if sys.argv[1] == 'feret':
+        np.random.seed(0)
+        np.random.shuffle(X)
+        X = X[:1000]
+
     assert X[0].dtype == np.float64
     assert X[0].max() <= 1 and X[0].min() >= 0
 

@@ -25,8 +25,8 @@ def _load_batch(path):
 
 @profile
 def load_data(train_ratio=0.7):
-    img = np.concatenate(([imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in FIRST_BATCH.iterdir()],
-                          [imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in SECOND_BATCH.iterdir()]))
+    img = np.concatenate(([imread(file.open(mode='rb'))/255 for file in FIRST_BATCH.iterdir()],
+                          [imread(file.open(mode='rb'))/255 for file in SECOND_BATCH.iterdir()]))
     cls = np.concatenate(([int(file.name[:5]) for file in FIRST_BATCH.iterdir()], [int(file.name[:5]) for file in SECOND_BATCH.iterdir()]))
     assert len(img) == len(cls)
     choices = np.arange(len(img))

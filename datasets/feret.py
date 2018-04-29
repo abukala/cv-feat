@@ -28,17 +28,21 @@ def load_data(train_ratio=0.7):
     img = []
     cls = []
     for file in FIRST_BATCH.iterdir():
-        img = np.append(img, imread(file)/255)
-        cls = np.append(cls, int(file.name[:5]))
+        img.append(imread(file)/255)
+        cls.append(int(file.name[:5]))
     for file in SECOND_BATCH.iterdir():
-        img = np.append(img, imread(file)/255)
-        cls = np.append(cls, int(file.name[:5]))
+        img.append(imread(file)/255)
+        cls.append(int(file.name[:5]))
     assert len(img) == len(cls)
     choices = np.arange(len(img))
     split = int(len(choices)*train_ratio)
     np.random.seed(0)
     np.random.shuffle(choices)
-    return (img[choices[:split]], cls[choices[:split]]), (img[choices[split:]], cls[choices[split:]])
+    X_train = [img[choice] for choice in choices[:split]]
+    y_train = [cls[choice] for choice in choices[:split]]
+    X_test = [img[choice] for choice in choices[split:]]
+    y_test = [cls[choice] for choice in choices[split:]]
+    return (X_train, y_train), (X_test, y_test)
 
 
 def load_training_data():

@@ -21,7 +21,7 @@ formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-4s %(message)s', dat
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-N_PROCESSES = 24
+N_PROCESSES = 5
 
 noise_params = {
     'gauss': {

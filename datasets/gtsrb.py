@@ -4,6 +4,7 @@ import csv
 import skimage.io
 import numpy as np
 from skimage.transform import resize
+from skimage.color import rgb2gray
 
 train_dir = DATA_PATH / 'GTSRB' / 'Final_Training' / 'Images'
 test_dir = DATA_PATH / 'GTSRB' / 'Final_Test' / 'Images'
@@ -44,7 +45,7 @@ def load_training_data():
             x_train.append(img)
             y_train.append(class_id)
 
-    return np.array([resize(crop_sq(img), size) for img in x_train]), y_train
+    return np.array([rgb2gray(resize(crop_sq(img), size)) for img in x_train]), y_train
 
 
 def load_test_data():
@@ -58,4 +59,4 @@ def load_test_data():
         x_test.append(img)
         y_test.append(class_id)
 
-    return np.array([resize(crop_sq(img), size) for img in x_test]), y_test
+    return np.array([rgb2gray(resize(crop_sq(img), size)) for img in x_test]), y_test

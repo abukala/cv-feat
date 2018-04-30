@@ -2,7 +2,6 @@ from .common import DATA_PATH
 from skimage.io import imread
 import bz2
 import numpy as np
-from memory_profiler import profile
 
 FIRST_BATCH = DATA_PATH / 'colorferet' / 'dvd2' / 'gray_feret_cd1' / 'data' / 'images'
 SECOND_BATCH = DATA_PATH / 'colorferet' / 'dvd2' / 'gray_feret_cd2' / 'data' / 'images'
@@ -23,7 +22,6 @@ def _load_batch(path):
     return img, cls
 
 
-@profile
 def load_data(train_ratio=0.7):
     img = []
     cls = []

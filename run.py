@@ -21,7 +21,7 @@ formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-4s %(message)s', dat
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-N_PROCESSES = 5
+N_PROCESSES = 24
 
 noise_params = {
     'gauss': {
@@ -98,8 +98,8 @@ def run():
                     X_test = np.array([apply_noise(img, noise_type, noise_level) for img in X_test])
 
             if train_noise == 'yes':
-                if noise_level == 'random':
-                    noise_types = [np.random.choice(list(noise_params.keys())) for _ in X_train]
+                if noise_type == 'random':
+                    noise_types = [np.random.choice(['sp', 'gauss', 'quantization']) for _ in X_train]
                     noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
                     X_train = np.array([apply_noise(img, noise_type, noise_level) for img, noise_type, noise_level in
                                        zip(X_train, noise_types, noise_levels)])

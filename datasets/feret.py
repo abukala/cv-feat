@@ -1,6 +1,6 @@
 from .common import DATA_PATH
 from skimage.io import imread
-import bz2
+from skimage import img_as_float
 import numpy as np
 
 FIRST_BATCH = DATA_PATH / 'colorferet' / 'dvd2' / 'gray_feret_cd1' / 'data' / 'images'
@@ -16,20 +16,14 @@ params = {
 # Img shape = (256, 384)
 
 
-def _load_batch(path):
-    img = np.array([imread(bz2.BZ2File(file.open(mode='rb')))/255 for file in path.iterdir()])
-    cls = np.array([int(file.name[:5]) for file in path.iterdir()])
-    return img, cls
-
-
 def load_data(train_ratio=0.7):
     img = []
     cls = []
     for file in FIRST_BATCH.iterdir():
-        img.append(imread(file)/255)
+        img.append(img_as_float(imread(file)).astype(np.float32))
         cls.append(int(file.name[:5]))
     for file in SECOND_BATCH.iterdir():
-        img.append(imread(file)/255)
+        img.append(img_as_float(imread(file)).astype(np.float32))
         cls.append(int(file.name[:5]))
     assert len(img) == len(cls)
     choices = np.arange(len(img))

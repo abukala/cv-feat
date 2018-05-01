@@ -10,7 +10,7 @@ def rescale(image, max_value=1.0):
     if max_value == 255:
         return np.clip(image, 0, max_value).astype(np.uint8)
     else:
-        return np.clip(image, 0, max_value).astype(np.float64)
+        return np.clip(image, 0, max_value).astype(np.float32)
 
 
 def apply_gaussian_noise(image, std, mean=0.0, max_value=1.0):
@@ -112,7 +112,7 @@ def apply_occlusion(image, fraction):
 
 
 def apply_noise(img, noise_type, noise_level):
-    assert img.dtype == np.float64
+    assert img.dtype in [np.float64, np.float32]
     assert img.max() <=1 and img.min() >= 0
 
     if noise_type == 'lres':

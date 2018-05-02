@@ -35,7 +35,7 @@ def apply_salt_and_pepper_noise(image, p, max_value=1.0):
     noisy[mask < p / 2] = 0
     noisy[mask > (1 - p / 2)] = max_value
 
-    return noisy
+    return rescale(noisy, max_value)
 
 
 def apply_quantization_noise(image, q, max_value=1.0):

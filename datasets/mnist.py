@@ -27,7 +27,7 @@ def _load_images(url):
     images = np.array([np.reshape(struct.unpack('>%sB' % l, file.read(l)), (rows, cols)) for _ in range(images_count)], dtype=np.uint8)
     assert len(images) == images_count
     assert images[0].shape == (rows, cols)
-    images = np.array([img/256 for img in images])
+    images = np.array([(img/255).astype(np.float32) for img in images])
 
     return images
 

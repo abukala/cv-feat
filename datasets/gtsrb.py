@@ -41,8 +41,8 @@ def load_training_data():
         for file in files:
             if file.endswith('.csv'):
                 continue
-            img = skimage.io.imread(os.path.join(dir_path, file))/256
-            x_train.append(img)
+            img = skimage.io.imread(os.path.join(dir_path, file))/255
+            x_train.append(img.astype(np.float32))
             y_train.append(class_id)
 
     return np.array([rgb2gray(resize(crop_sq(img), size)) for img in x_train]), y_train
@@ -55,8 +55,8 @@ def load_test_data():
     next(gt_file)
     for row in gt_file:
         class_id = int(row[7])
-        img = skimage.io.imread(os.path.join(path, row[0]))/256
-        x_test.append(img)
+        img = skimage.io.imread(os.path.join(path, row[0]))/255
+        x_test.append(img.astype(np.float32))
         y_test.append(class_id)
 
     return np.array([rgb2gray(resize(crop_sq(img), size)) for img in x_test]), y_test

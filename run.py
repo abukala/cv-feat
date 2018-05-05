@@ -92,7 +92,8 @@ def run():
                 X_test = np.array([apply_noise(img, noise_type, noise_level) for img, noise_type, noise_level in zip(X_test, noise_types, noise_levels)])
             else:
                 if noise_level == 'random':
-                    noise_levels = get_noise_params(noise_type)
+                    noise_range = get_noise_params(noise_type)
+                    noise_levels = [np.random.choice(noise_range) for _ in X_test]
                     X_test = np.array([apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_test, noise_levels)])
                 else:
                     X_test = np.array([apply_noise(img, noise_type, noise_level) for img in X_test])
@@ -105,7 +106,8 @@ def run():
                                        zip(X_train, noise_types, noise_levels)])
                 else:
                     if noise_level == 'random':
-                        noise_levels = get_noise_params(noise_type)
+                        noise_range = get_noise_params(noise_type)
+                        noise_levels = [np.random.choice(noise_range) for _ in X_train]
                         X_train = np.array(
                             [apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_train, noise_levels)])
                     else:

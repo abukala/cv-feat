@@ -90,7 +90,7 @@ def evaluate(noise_type, noise_level, images):
         for value in methods[method]:
             result[method][value] = []
 
-    assert len(images.shape) == 3
+    assert len(images[0].shape) == 2
 
     for i, img in tqdm(enumerate(images), total=len(images)):
         if noise_level == 'random':

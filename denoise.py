@@ -41,7 +41,7 @@ noise_params = {
 
 def denoise(img, method, value):
     assert method in ['bm3d', 'median', 'bilateral', 'wiener']
-    assert img.dtype == np.float64
+    assert img.dtype == np.float32
     assert img.max() <= 1 and img.min() >= 0
 
     if method == 'bm3d':

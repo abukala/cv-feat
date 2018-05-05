@@ -146,7 +146,7 @@ if __name__ == '__main__':
         np.random.shuffle(X)
         X = X[:1000]
 
-    assert X[0].dtype == np.float64
+    assert X[0].dtype == np.float32
     assert X[0].max() <= 1 and X[0].min() >= 0
 
     if noise_type == 'random':

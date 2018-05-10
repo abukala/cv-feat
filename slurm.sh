@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #SBATCH -N 1
-#SBATCH --ntasks-per-node=24
+#SBATCH --ntasks-per-node=5
+#SBATCH --mem-per-cpu=20GB
 #SBATCH --time=24:00:00
 
 module add plgrid/tools/python/3.5.2

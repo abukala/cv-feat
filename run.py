@@ -21,7 +21,7 @@ formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-4s %(message)s', dat
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-N_PROCESSES = 24
+N_PROCESSES = 5
 
 noise_params = {
     'gauss': {
@@ -117,8 +117,7 @@ def run():
         params = eval(trial['Parameters'])
         feature_params = {}
         if 'feature_params' in params:
-            if feature in params['feature_params']:
-                feature_params = params['feature_params'][feature]
+            feature_params = params['feature_params']
 
         if feature == 'hog':
             X_train = get_hog(X_train, **feature_params)

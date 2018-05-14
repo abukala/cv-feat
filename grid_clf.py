@@ -46,6 +46,5 @@ if __name__ == '__main__':
     filename = '%s_vectorized.json' % sys.argv[1]
     filepath = RESULTS_DIR / filename
     with filepath.open(mode='a') as outfile:
-        for result in results:
-            json.dump(result, outfile)
-            outfile.write("\n")
+        json.dump(results, outfile)
+        outfile.write("\n")

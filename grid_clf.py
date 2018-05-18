@@ -34,7 +34,10 @@ if __name__ == '__main__':
     estimator = eval(sys.argv[2])()
     X, y = dataset.load_training_data()
     clf = GridSearchCV(estimator=estimator, param_grid=clf_params[sys.argv[2]], cv=5, n_jobs=5)
-    clf.fit(get_pix(X), y)
+    scale = None
+    if sys.argv[1] == 'feret':
+        scale = 0.25
+    clf.fit(get_pix(X, scale=scale), y)
     results = {
         "clf": sys.argv[2],
         "clf_params": clf.best_params_,

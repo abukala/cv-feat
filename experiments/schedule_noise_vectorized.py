@@ -152,7 +152,6 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
             'Feature': 'none',
             'Parameters': {
                 'clf_params': parameters[dataset]['clf'][classifier],
-                'feature_params': parameters[dataset]['hog']
             },
             'Noise_Type': 'none',
             'Noise_Level': 'none',

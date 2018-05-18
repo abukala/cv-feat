@@ -12,7 +12,6 @@ import multiprocessing as mp
 import operator
 from tqdm import tqdm
 from noise import apply_noise
-from skimage import img_as_float
 
 RESULTS_PATH = pathlib.Path() / 'results' / 'baseline'
 
@@ -57,7 +56,7 @@ def denoise(img, method, value):
     else:
         raise ValueError('Unknown method: %s' % method)
 
-    denoised = img_as_float(denoised).astype(np.float32)
+    denoised = denoised.astype(np.float32)
 
     assert denoised.dtype == img.dtype
     assert denoised.max() <= 1 and denoised.min() >= 0, (denoised.max(), denoised.min())

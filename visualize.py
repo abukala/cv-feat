@@ -35,8 +35,9 @@ def visualize(noise_type, file_name=None):
                 selection_clean = trials_clean[(trials_clean['Dataset'] == dataset) &
                                                (trials_clean['Classifier'] == classifier) &
                                                (trials_clean['Feature'] == feature)]
-                row = [dataset, classifier, 0, eval(selection_clean.iloc[0]['Score']), selection_clean.iloc[0]['Label']]
-                rows.append(row)
+                for training_noise in ['yes', 'no']:
+                    row = [dataset, classifier, 0, eval(selection_clean.iloc[0]['Score']), '%s_%s' % (feature, training_noise)]
+                    rows.append(row)
             for noise_level in noise_levels:
                 for feature in ['hog', 'none']:
                     for training_noise in ['yes', 'no']:
@@ -46,7 +47,8 @@ def visualize(noise_type, file_name=None):
                                            (trials['Classifier'] == classifier) &
                                            (trials['Noise_Level'] == noise_level)]
                         assert len(selection) == 1
-                        rows.append([dataset, classifier, eval(noise_level), eval(selection.iloc[0]['Score']), selection.iloc[0]['Label']])
+
+                        rows.append([dataset, classifier, eval(noise_level), eval(selection.iloc[0]['Score']), '%s_%s' % (feature, training_noise)])
     noise_levels = [eval(level) for level in noise_levels]
     if noise_type != 'lres':
         noise_levels = [round(level, 3) for level in noise_levels]

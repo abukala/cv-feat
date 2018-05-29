@@ -4,6 +4,7 @@ from databases import pull_pending, submit_result
 from datasets import cifar10, stl10, gtsrb, mnist, feret
 from features import get_hog, get_pix
 from noise import apply_noise
+from denoise import denoise
 
 from sklearn import metrics
 from sklearn.neighbors import KNeighborsClassifier as KNN
@@ -116,8 +117,14 @@ def run():
         feature = trial['Feature']
         params = eval(trial['Parameters'])
         feature_params = {}
+        denoise_params = None
         if 'feature_params' in params:
             feature_params = params['feature_params']
+        if 'denoise_params' in params:
+            denoise_params = params['denoise_params']
+
+        if denoise_params:
+            X_test = [denoise(img, denoise_params[0], denoise_params[1]) for img in X_test]
 
         if feature == 'hog':
             X_train = get_hog(X_train, **feature_params)

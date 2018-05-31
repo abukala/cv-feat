@@ -151,7 +151,7 @@ def get_params():
     }
     for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
         params[dataset]['denoise'] = {}
-        for noise_type in ['gauss', 'sp', 'quantization', 'random']:
+        for noise_type in ['gauss', 'sp', 'quantization']:
             params[dataset]['denoise'][noise_type] = {}
             filename = '%s_%s.json' % (dataset, noise_type)
             fp = RESULTS_PATH / filename
@@ -161,6 +161,14 @@ def get_params():
                 scores = {x: result[x][1] for x in ['bm3d', 'bilateral', 'median']}
                 best_method = max(scores, key=scores.get)
                 params[dataset]['denoise'][noise_type][result['noise_level']] = (best_method, result[best_method][0])
+        filename = '%s_random.json' % dataset
+        fp = RESULTS_PATH / filename
+        with fp.open() as file:
+            data = [eval(line) for line in file.readlines()]
+        result = data[0]
+        scores = {x: result[x][1] for x in ['bm3d', 'bilateral', 'median']}
+        best_method = max(scores, key=scores.get)
+        params[dataset]['denoise']['random'] = (best_method, result[best_method][0])
 
     return params
 

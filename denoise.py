@@ -56,17 +56,17 @@ def denoise(img, method, value):
     else:
         raise ValueError('Unknown method: %s' % method)
 
-    denoised = rescale(denoised.astype(np.float32))
+    denoised = rescale(denoised)
 
     assert denoised.dtype == img.dtype
-    assert denoised.max() <= 1 and denoised.min() >= 0, (denoised.max(), denoised.min())
+    assert denoised.max() <= 1 and denoised.min() >= 0, (denoised.max(), denoised.min(), denoised)
 
     return denoised
 
 
 def evaluate(noise_type, noise_level, images):
     methods = {
-        'bm3d': [0.05, 0.1, 0.2, 0.4, 0.5],
+        'bm3d': [0.1, 0.2, 0.4, 0.5],
         'median': [3, 5, 7, 9, 11, 13],
         'bilateral': [(x, y) for x in [0.05, 0.1, 0.2, 0.3, 0.4, 0.5] for y in [3, 5, 7]],
         'wiener': [(x, y) for x in range(1, 6) for y in range(1, 26)]

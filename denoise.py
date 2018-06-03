@@ -47,7 +47,7 @@ def denoise(img, method, value):
 
     if method == 'bm3d':
         denoised = bm3d(gray2rgb(img), value)
-        denoised = rgb2gray(denoised)
+        denoised = rgb2gray(rescale(denoised))
     elif method == 'median':
         denoised = median(img, kernel_size=(value, value))
     elif method == 'bilateral':

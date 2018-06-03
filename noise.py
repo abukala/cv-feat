@@ -5,6 +5,29 @@ from skimage.filters import gaussian
 from scipy import misc
 import logging
 
+noise_params = {
+    'gauss': {
+        'min': 0,
+        'max': 0.25,
+        'step': 0.025
+    },
+    'quantization': {
+        'min': 0,
+        'max': 0.5,
+        'step': 0.05
+    },
+    'sp': {
+        'min': 0,
+        'max': 0.2,
+        'step': 0.02
+    },
+    'blur': {
+        'min': 0,
+        'max': 5,
+        'step': 0.5
+    }
+}
+
 
 def rescale(image, max_value=1.0):
     if max_value == 255:
@@ -114,6 +137,14 @@ def apply_occlusion(image, fraction):
 def apply_noise(img, noise_type, noise_level):
     assert img.dtype in [np.float64, np.float32]
     assert img.max() <=1 and img.min() >= 0
+
+    if noise_type == 'random':
+        noise_type = np.random.choice(['sp', 'gauss', 'quantization'])
+    if noise_level == 'random':
+        noise_range = np.arange(noise_params[noise_type]['min'] + noise_params[noise_type]['step'],
+                                noise_params[noise_type]['max'] + noise_params[noise_type]['step'],
+                                noise_params[noise_type]['step'])
+        noise_level = np.random.choice(noise_range)
 
     if noise_type == 'lres':
         noise_level = int(noise_level)

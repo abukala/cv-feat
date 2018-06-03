@@ -77,7 +77,7 @@ def evaluate(noise_type, noise_level, images):
     result = {
         'input': []
     }
-    if noise_type in ['gauss', 'sp', 'quantization']:
+    if noise_type in ['gauss', 'sp', 'quantization', 'random']:
         tested_methods = ['bm3d', 'median', 'bilateral']
         measure = compare_psnr
     elif noise_type == 'blur':

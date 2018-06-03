@@ -61,7 +61,7 @@ def denoise(img, method, value):
     denoised = rescale(denoised)
 
     assert denoised.dtype == img.dtype
-    assert denoised.max() <= 1 and denoised.min() >= 0
+    assert denoised.max() <= 1 and denoised.min() >= 0, (denoised.max(), denoised.min())
 
     return denoised
 

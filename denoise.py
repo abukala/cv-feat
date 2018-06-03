@@ -6,6 +6,7 @@ from pybm3d.bm3d import bm3d
 from scipy.signal import medfilt as median
 from skimage.restoration import denoise_bilateral as bilateral
 from skimage.restoration import unsupervised_wiener as wiener
+from skimage.color import gray2rgb, rgb2gray
 import json
 import sys
 import multiprocessing as mp
@@ -45,7 +46,8 @@ def denoise(img, method, value):
     assert img.max() <= 1 and img.min() >= 0
 
     if method == 'bm3d':
-        denoised = bm3d(img, value)
+        denoised = bm3d(gray2rgb(img), value)
+        denoised = rgb2gray(denoised)
     elif method == 'median':
         denoised = median(img, kernel_size=(value, value))
     elif method == 'bilateral':
@@ -59,14 +61,14 @@ def denoise(img, method, value):
     denoised = rescale(denoised)
 
     assert denoised.dtype == img.dtype
-    assert denoised.max() <= 1 and denoised.min() >= 0, (denoised.max(), denoised.min(), denoised)
+    assert denoised.max() <= 1 and denoised.min() >= 0
 
     return denoised
 
 
 def evaluate(noise_type, noise_level, images):
     methods = {
-        'bm3d': [0.1, 0.2, 0.4, 0.5],
+        'bm3d': [0.05, 0.1, 0.2, 0.4, 0.5],
         'median': [3, 5, 7, 9, 11, 13],
         'bilateral': [(x, y) for x in [0.05, 0.1, 0.2, 0.3, 0.4, 0.5] for y in [3, 5, 7]],
         'wiener': [(x, y) for x in range(1, 6) for y in range(1, 26)]

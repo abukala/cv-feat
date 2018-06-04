@@ -33,7 +33,6 @@ def denoise(img, method, value):
     denoised = rescale(denoised)
 
     assert denoised.dtype == img.dtype
-    assert denoised.max() <= 1 and denoised.min() >= 0, (denoised.max(), denoised.min(), method, value)
 
     return denoised
 
@@ -54,6 +53,8 @@ def run(method, X_clean, X_noisy):
     for clean, noisy in tqdm(zip(X_clean, X_noisy), total=len(X_clean)):
         for value in methods[method]:
             denoised = denoise(noisy, method, value)
+            while np.count_nonzero(np.isnan(denoised)) != 0:
+                denoised = denoise(apply_noise(clean, result['noise_type'], result['noise_level']), method, value)
             psnr[value].append(compare_psnr(clean, denoised))
 
     for value in psnr:

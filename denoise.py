@@ -54,7 +54,7 @@ def run(method, X_clean, X_noisy):
         for value in methods[method]:
             denoised = denoise(noisy, method, value)
             if denoised.max() == np.nan:
-                print('%s NaN values found in method %s, %s, noise_type: %s, noise_level: %s' % (np.count_nonzero(np.isnan(denoised), method, value, noise_type, noise_level))
+                print('%s NaN values found in method %s, %s, noise_type: %s, noise_level: %s' % (np.count_nonzero(np.isnan(denoised)), method, value, noise_type, noise_level))
                 i = 0
                 while denoised.max() == np.nan:
                     if i > 1000:

@@ -54,13 +54,12 @@ def run(method, X_clean, X_noisy):
         for value in methods[method]:
             denoised = denoise(noisy, method, value)
             if denoised.max() == np.nan:
-                print('NaN values found in method %s, %s, noise_type: %s, noise_level: %s' % (method, value, noise_type, noise_level))
+                print('%s NaN values found in method %s, %s, noise_type: %s, noise_level: %s' % (np.count_nonzero(np.isnan(denoised), method, value, noise_type, noise_level))
                 i = 0
                 while denoised.max() == np.nan:
                     if i > 1000:
-                        print('NaN values persistent after 1000 rerolls, saving image...')
                         imsave('clean.png', clean)
-                        print('Number of NaN: %s' % np.count_nonzero(np.isnan(denoised)))
+                        print("Could not reroll after 1000 tries")
                         raise ValueError
                     denoised = denoise(apply_noise(clean, result['noise_type'], result['noise_level']), method, value)
                     i+=1
@@ -109,11 +108,8 @@ if __name__ == '__main__':
         'noise_level': noise_level,
         'input': str(np.round(np.mean([compare_psnr(clean, noisy) for clean, noisy in zip(X, Xn)]), 2))
     })
-    proc = mp.Process(target=run, args=('bm3d', X, Xn))
-    proc.start()
-    proc.join()
-    # proc = [mp.Process(target=run, args=(denoise_method, X, Xn)) for denoise_method in ['bm3d', 'bilateral', 'median']]
-    # for p in proc:
-    #     p.start()
-    # for p in proc:
-    #     p.join()
+    proc = [mp.Process(target=run, args=(denoise_method, X, Xn)) for denoise_method in ['bm3d', 'bilateral', 'median']]
+    for p in proc:
+        p.start()
+    for p in proc:
+        p.join()

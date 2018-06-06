@@ -12,7 +12,7 @@ import sys
 import multiprocessing as mp
 from tqdm import tqdm
 from noise import apply_noise, rescale
-
+from skimage.io import imsave
 RESULTS_PATH = pathlib.Path() / 'results' / 'baseline'
 
 
@@ -53,8 +53,17 @@ def run(method, X_clean, X_noisy):
     for clean, noisy in tqdm(zip(X_clean, X_noisy), total=len(X_clean)):
         for value in methods[method]:
             denoised = denoise(noisy, method, value)
-            while denoised.max() == np.nan:
-                denoised = denoise(apply_noise(clean, result['noise_type'], result['noise_level']), method, value)
+            if denoised.max() == np.nan:
+                print('NaN values found in method %s, %s, noise_type: %s, noise_level: %s' % (method, value, noise_type, noise_level))
+                i = 0
+                while denoised.max() == np.nan:
+                    if i > 1000:
+                        print('NaN values persistent after 1000 rerolls, saving image...')
+                        imsave('clean.png', clean)
+                        print('Number of NaN: %s' % np.count_nonzero(np.isnan(denoised)))
+                        raise ValueError
+                    denoised = denoise(apply_noise(clean, result['noise_type'], result['noise_level']), method, value)
+                    i+=1
             psnr[value].append(compare_psnr(clean, denoised))
 
     for value in psnr:

@@ -109,8 +109,11 @@ if __name__ == '__main__':
         'noise_level': noise_level,
         'input': str(np.round(np.mean([compare_psnr(clean, noisy) for clean, noisy in zip(X, Xn)]), 2))
     })
-    proc = [mp.Process(target=run, args=(denoise_method, X, Xn)) for denoise_method in ['bm3d', 'bilateral', 'median']]
-    for p in proc:
-        p.start()
-    for p in proc:
-        p.join()
+    proc = mp.Process(target=run, args=('bm3d', X, Xn))
+    proc.start()
+    proc.join()
+    # proc = [mp.Process(target=run, args=(denoise_method, X, Xn)) for denoise_method in ['bm3d', 'bilateral', 'median']]
+    # for p in proc:
+    #     p.start()
+    # for p in proc:
+    #     p.join()

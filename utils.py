@@ -161,13 +161,9 @@ def get_params():
                 scores = {x: result[x][1] for x in ['bm3d', 'bilateral', 'median']}
                 best_method = max(scores, key=scores.get)
                 if result['noise_level'] != 'random':
-                    try:
-                        noise_level = round(eval(result['noise_level']), 3)
-                    except TypeError:
-                        print(result['noise_level'])
-                        raise
+                    noise_level = round(result['noise_level'], 3)
                 else:
-                    noise_level = 'random'
+                    noise_level = result['noise_level']
                 params[dataset]['denoise'][noise_type][noise_level] = (best_method, result[best_method][0])
         filename = '%s_random.json' % dataset
         fp = RESULTS_PATH / filename

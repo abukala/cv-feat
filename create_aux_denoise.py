@@ -13,7 +13,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
             noise_range = []
         else:
             noise_range = [nr for nr in np.arange(noise_params[noise_type]['min'] + noise_params[noise_type]['step'],
-                                              noise_params[noise_type]['max'], noise_params[noise_type]['step'])]
+                                              noise_params[noise_type]['max'] + noise_params[noise_type]['step'], noise_params[noise_type]['step'])]
         noise_range.append('random')
         if fp.exists():
             with fp.open() as file:

@@ -36,9 +36,6 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                     noise_level_range = np.arange(nr['min']+nr['step'], nr['max']+nr['step'], nr['step'])
                     for num in noise_level_range:
                         num = round(num, 3)
-                        if num not in params[dataset]['denoise'][noise_type]:
-                            print(params[dataset]['denoise'][noise_type])
-                            print(num, noise_type, dataset)
                         trial = {
                             'Dataset': dataset,
                             'Feature': feature,

@@ -12,7 +12,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
         if noise_type == 'random':
             noise_range = []
         else:
-            noise_range = [nr for nr in np.arange(noise_params[noise_type]['min'] + noise_params[noise_type]['step'],
+            noise_range = [round(nr, 3) for nr in np.arange(noise_params[noise_type]['min'] + noise_params[noise_type]['step'],
                                               noise_params[noise_type]['max'] + noise_params[noise_type]['step'], noise_params[noise_type]['step'])]
         noise_range.append('random')
         if fp.exists():
@@ -23,7 +23,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                 found = False
                 for line in data:
                     try:
-                        if round(noise_level, 3) == round(line['noise_level'], 3):
+                        if noise_level == round(line['noise_level'], 3):
                             found = True
                             break
                     except TypeError:

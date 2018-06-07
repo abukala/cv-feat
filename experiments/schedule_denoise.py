@@ -35,6 +35,7 @@ for dataset in ['gtsrb', 'stl10', 'feret', 'mnist']:
                     nr = noise[noise_type]
                     noise_level_range = np.arange(nr['min']+nr['step'], nr['max']+nr['step'], nr['step'])
                     for num in noise_level_range:
+                        num = round(num, 3)
                         trial = {
                             'Dataset': dataset,
                             'Feature': feature,

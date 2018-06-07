@@ -175,8 +175,3 @@ def get_params():
         params[dataset]['denoise']['random'] = (best_method, result[best_method][0])
 
     return params
-
-
-if __name__ == '__main__':
-    params = get_params()
-    print(params)

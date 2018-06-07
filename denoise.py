@@ -53,16 +53,14 @@ def run(method, X_clean, X_noisy):
     for clean, noisy in tqdm(zip(X_clean, X_noisy), total=len(X_clean)):
         for value in methods[method]:
             denoised = denoise(noisy, method, value)
-            if denoised.max() == np.nan:
-                print('%s NaN values found in method %s, %s, noise_type: %s, noise_level: %s' % (np.count_nonzero(np.isnan(denoised)), method, value, noise_type, noise_level))
+            if denoised.max() == np.nan or denoised.min() == np.nan:
                 i = 0
-                while denoised.max() == np.nan:
-                    if i > 1000:
-                        imsave('clean.png', clean)
-                        print("Could not reroll after 1000 tries")
+                while denoised.max() == np.nan or denoised.min() == np.nan:
+                    if i >= 1000:
+                        print("Failed to denoise image with method: %s, %s" % (method, value))
                         raise ValueError
                     denoised = denoise(apply_noise(clean, result['noise_type'], result['noise_level']), method, value)
-                    i+=1
+                    i += 1
             psnr[value].append(compare_psnr(clean, denoised))
 
     for value in psnr:

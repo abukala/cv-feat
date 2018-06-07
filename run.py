@@ -78,43 +78,13 @@ def run():
         scale = False
 
         if trial['Dataset'].startswith('feret'):
-            (X_train, y_train), (X_test, y_test) = feret.load_data()
+            (X_train_clean, y_train), (X_test_clean, y_test) = feret.load_data()
             scale = 0.25
         else:
             ds = eval(trial['Dataset'])
-            (X_train, y_train), (X_test, y_test) = ds.load_training_data(), ds.load_test_data()
+            (X_train_clean, y_train), (X_test_clean, y_test) = ds.load_training_data(), ds.load_test_data()
 
         noise_type, noise_level, train_noise = trial['Noise_Type'], trial['Noise_Level'], trial['Train_Noise']
-
-        if noise_type != 'none' and noise_level != 'none':
-            if noise_type == 'random':
-                noise_types = [np.random.choice(['sp', 'gauss', 'quantization']) for _ in X_test]
-                noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
-                X_test = np.array([apply_noise(img, noise_type, noise_level) for img, noise_type, noise_level in zip(X_test, noise_types, noise_levels)])
-            else:
-                if noise_level == 'random':
-                    noise_range = get_noise_params(noise_type)
-                    noise_levels = [np.random.choice(noise_range) for _ in X_test]
-                    X_test = np.array([apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_test, noise_levels)])
-                else:
-                    X_test = np.array([apply_noise(img, noise_type, noise_level) for img in X_test])
-
-            if train_noise == 'yes':
-                if noise_type == 'random':
-                    noise_types = [np.random.choice(['sp', 'gauss', 'quantization']) for _ in X_train]
-                    noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
-                    X_train = np.array([apply_noise(img, noise_type, noise_level) for img, noise_type, noise_level in
-                                       zip(X_train, noise_types, noise_levels)])
-                else:
-                    if noise_level == 'random':
-                        noise_range = get_noise_params(noise_type)
-                        noise_levels = [np.random.choice(noise_range) for _ in X_train]
-                        X_train = np.array(
-                            [apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_train, noise_levels)])
-                    else:
-                        X_train = np.array([apply_noise(img, noise_type, noise_level) for img in X_train])
-
-        feature = trial['Feature']
         params = eval(trial['Parameters'])
         feature_params = {}
         denoise_params = None
@@ -123,8 +93,55 @@ def run():
         if 'denoise_params' in params:
             denoise_params = params['denoise_params']
 
-        if denoise_params:
-            X_test = [denoise(img, denoise_params[0], denoise_params[1]) for img in X_test]
+        if noise_type != 'none' and noise_level != 'none':
+            if noise_type == 'random':
+                noise_types = [np.random.choice(['sp', 'gauss', 'quantization']) for _ in X_test_clean]
+                noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
+            else:
+                noise_types = [noise_type for _ in X_test_clean]
+                if noise_level == 'random':
+                    noise_range = get_noise_params(noise_type)
+                    noise_levels = [np.random.choice(noise_range) for _ in X_test_clean]
+                else:
+                    noise_levels = [noise_level for _ in X_test_clean]
+
+            X_test = []
+            for img, noise_type, noise_level in zip(X_test_clean, noise_types, noise_levels):
+                noisy = apply_noise(img, noise_type, noise_level)
+                if denoise_params:
+                    denoised = denoise(noisy, denoise_params[0], denoise_params[1])
+                    if denoised.max() == np.nan or denoised.min() == np.nan:
+                        i = 0
+                        while denoised.max() == np.nan or denoised.min == np.nan:
+                            if i >= 1000:
+                                logger.error('Failed to denoise image with method: %s, %s.' % (denoise_params[0], denoise_params[1]))
+                                raise ValueError
+                            denoised = denoise(noisy, denoise_params[0], denoise_params[1])
+                            i += 1
+                    X_test.append(denoised)
+                X_test.append(noisy)
+            X_test = np.array(X_test)
+
+            if train_noise == 'yes':
+                if noise_type == 'random':
+                    noise_types = [np.random.choice(['sp', 'gauss', 'quantization']) for _ in X_train_clean]
+                    noise_levels = [np.random.choice(get_noise_params(n_type)) for n_type in noise_types]
+                    X_train = np.array([apply_noise(img, noise_type, noise_level) for img, noise_type, noise_level in
+                                       zip(X_train_clean, noise_types, noise_levels)])
+                else:
+                    if noise_level == 'random':
+                        noise_range = get_noise_params(noise_type)
+                        noise_levels = [np.random.choice(noise_range) for _ in X_train_clean]
+                        X_train = np.array(
+                            [apply_noise(img, noise_type, noise_level) for img, noise_level in zip(X_train_clean, noise_levels)])
+                    else:
+                        X_train = np.array([apply_noise(img, noise_type, noise_level) for img in X_train_clean])
+            else:
+                X_train = X_train_clean
+        else:
+            X_train, X_test = X_train_clean, X_test_clean
+
+        feature = trial['Feature']
 
         if feature == 'hog':
             X_train = get_hog(X_train, **feature_params)

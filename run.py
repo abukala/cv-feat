@@ -150,8 +150,8 @@ def run():
             X_train = get_pix(X_train, scale=scale)
             X_test = get_pix(X_test, scale=scale)
 
-        assert len(X_train) == len(y_train), trial
-        assert len(X_test) == len(y_test), trial
+        assert len(X_train) == len(y_train), (len(X_train), len(y_train))
+        assert len(X_test) == len(y_test), (len(X_test), len(y_test))
 
         clf_params = params['clf_params']
         clf = eval(trial['Classifier'])(**clf_params)

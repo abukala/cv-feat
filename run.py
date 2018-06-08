@@ -119,7 +119,8 @@ def run():
                             denoised = denoise(noisy, denoise_params[0], denoise_params[1])
                             i += 1
                     X_test.append(denoised)
-                X_test.append(noisy)
+                else:
+                    X_test.append(noisy)
             X_test = np.array(X_test)
 
             if train_noise == 'yes':

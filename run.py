@@ -112,7 +112,6 @@ def run():
                     denoised = denoise(noisy, denoise_params[0], denoise_params[1])
                     if denoised.max() == np.nan or denoised.min() == np.nan or np.count_nonzero(np.isnan(denoised)) > 0:
                         i = 0
-                        logger.info('NaN values after denoise, rerolling...')
                         while denoised.max() == np.nan or denoised.min == np.nan or np.count_nonzero(np.isnan(denoised)) > 0:
                             if i >= 1000:
                                 logger.error('Failed to denoise image with method: %s, %s. Noise type: %s, %s' % (denoise_params[0], denoise_params[1], noise_type, noise_level))

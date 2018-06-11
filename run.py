@@ -146,8 +146,12 @@ def run():
         feature = trial['Feature']
 
         if feature == 'hog':
+            if np.count_nonzero(np.isnan(X_train)) > 0 or np.count_nonzero(np.isnan(X_test)) > 0:
+                print('NaN values found in dataset prior to feature extraction')
             X_train = get_hog(X_train, **feature_params)
             X_test = get_hog(X_test, **feature_params)
+            if np.count_nonzero(np.isnan(X_train)) > 0 or np.count_nonzero(np.isnan(X_test)) > 0:
+                print('NaN values found in hog descriptors')
         elif feature == 'none':
             X_train = get_pix(X_train, scale=scale)
             X_test = get_pix(X_test, scale=scale)

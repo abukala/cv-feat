@@ -1,4 +1,5 @@
 from databases import RESULTS_PATH
+import numpy as np
 RESULTS_PATH = RESULTS_PATH / 'baseline'
 
 
@@ -158,7 +159,7 @@ def get_params():
             with fp.open() as file:
                 data = [eval(line) for line in file.readlines()]
             for result in data:
-                scores = {x: result[x][1] for x in ['bm3d', 'bilateral', 'median']}
+                scores = {x: result[x][1] for x in ['bm3d', 'bilateral', 'median'] if result[x][1] != 'nan'}
                 best_method = max(scores, key=scores.get)
                 if result['noise_level'] != 'random':
                     noise_level = round(result['noise_level'], 3)
@@ -175,3 +176,7 @@ def get_params():
         params[dataset]['denoise']['random'] = (best_method, result[best_method][0])
 
     return params
+
+
+if __name__ == '__main__':
+    get_params()

@@ -144,7 +144,7 @@ def _connect(database_path, exclusive=False, timeout=600.0):
 
 
 def _columns(score):
-    columns = ['Dataset', 'Classifier', 'Parameters', 'Feature', 'Noise_Type', 'Noise_Level', 'Train_Noise', 'Score']
+    columns = ['Dataset', 'Classifier', 'Clf_Params', 'Feature_Params', 'Denoise_Params', 'Feature', 'Noise_Type', 'Noise_Level', 'Train_Noise', 'Score']
 
     if score:
         return columns
@@ -201,7 +201,6 @@ if __name__ == '__main__':
                 description = None
             path = RESULTS_PATH / filename
             export(path=path, description=description)
-
     else:
         if databases_exist:
             print('Exporting results...')
